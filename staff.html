@@ -2,598 +2,1038 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="theme-color" content="#176b55">
-  <title>工作人員報到｜婉如基金會</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFF3F7">
+  <title>活動報到｜工作人員正式版</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
     * { box-sizing: border-box; }
 
     :root {
-      --green: #176b55;
-      --green-dark: #124c3e;
-      --green-light: #edf6f1;
-      --text: #263b32;
-      --muted: #68796f;
-      --border: #e2eae5;
-      --warning: #a33b30;
+      --bg: #FFF3F7;
+      --card: #FFFFFF;
+      --pink: #C96F95;
+      --pink-dark: #9F4E72;
+      --pink-light: #FBE3ED;
+      --text: #513744;
+      --muted: #896D7A;
+      --border: #F0D2DF;
+      --orange: #A85C08;
+      --orange-bg: #FFF2DC;
+      --red: #B42318;
+      --red-bg: #FFF0EE;
     }
+
+
+    
+/* 已報到提示：大字、粗體、紅色 */
+
+.already-checked-in {
+    color: #D00000 !important;
+    font-size: 26px !important;
+    font-weight: 900 !important;
+    line-height: 1.5;
+}
 
     body {
       margin: 0;
-      padding: 20px 14px 36px;
-      background: #f3f6f4;
-      color: var(--text);
+      padding: 16px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
       font-family: Arial, "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      font-size: 18px;
+      -webkit-text-size-adjust: 100%;
     }
 
-    .page {
-      max-width: 520px;
+    main {
+      width: 100%;
+      max-width: 560px;
       margin: 0 auto;
     }
 
     .hero {
-      padding: 25px 21px;
-      border-radius: 18px;
-      color: #fff;
-      background: linear-gradient(135deg, var(--green), var(--green-dark));
-      box-shadow: 0 8px 22px rgba(23, 107, 85, .14);
+      text-align: center;
+      padding: 12px 8px 18px;
     }
 
-    .brand {
-      margin-bottom: 9px;
-      color: #d7eee4;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
+    .hero-icon {
+      display: flex;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 12px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #FFE5EF, #F8D1E1);
+      border: 2px solid #F0C4D7;
+      box-shadow: 0 5px 14px rgba(159, 78, 114, 0.12);
+      font-size: 54px;
     }
 
     h1 {
-      margin: 0 0 9px;
-      font-size: 25px;
-      line-height: 1.4;
-    }
-
-    .hero p {
       margin: 0;
-      color: #e4f2eb;
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .card {
-      margin-top: 17px;
-      padding: 20px 18px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: #fff;
-      box-shadow: 0 3px 13px rgba(30, 60, 45, .04);
-    }
-
-    .event-box {
-      padding: 14px;
-      border-radius: 12px;
-      background: var(--green-light);
-    }
-
-    .event-label {
-      margin-bottom: 5px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .event-name {
-      color: var(--green);
-      font-size: 17px;
-      font-weight: 700;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-
-    .section-title {
-      margin: 20px 0 7px;
-      font-size: 17px;
-    }
-
-    .helper {
-      margin: 0 0 15px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    label {
-      display: block;
-      margin: 16px 0 7px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    input {
-      display: block;
-      width: 100%;
-      min-height: 48px;
-      padding: 12px 13px;
-      border: 1px solid #cbd8cf;
-      border-radius: 10px;
-      background: #fff;
-      color: var(--text);
-      font-size: 16px;
-    }
-
-    input:focus {
-      outline: 2px solid rgba(23, 107, 85, .18);
-      border-color: var(--green);
-    }
-
-    button {
-      display: block;
-      width: 100%;
-      min-height: 49px;
-      margin-top: 13px;
-      padding: 13px 15px;
-      border: 0;
-      border-radius: 10px;
-      background: var(--green);
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
-
-    .message {
-      margin-top: 16px;
-      padding: 13px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f7f9f7;
-      color: #496254;
-      font-size: 14px;
-      line-height: 1.8;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-    }
-
-    .message:empty {
-      display: none;
-    }
-
-    .message.success {
-      border-color: #c6e5d3;
-      background: #edf8f0;
-      color: #176b45;
-    }
-
-    .message.warning {
-      border-color: #f0d1cb;
-      background: #fff3f1;
-      color: var(--warning);
-    }
-
-    .participant-card {
-      margin-top: 17px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fbfcfb;
-    }
-
-    .participant-card:empty {
-      display: none;
-    }
-
-    .field {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e9efeb;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .field:last-child {
-      border-bottom: 0;
-    }
-
-    .field-label {
-      flex-shrink: 0;
-      color: var(--muted);
-    }
-
-    .field-value {
-      text-align: right;
-      font-weight: 700;
-      overflow-wrap: anywhere;
-    }
-
-    .device-box {
-      margin-top: 17px;
-      padding: 14px;
-      border-radius: 12px;
-      background: #f3f6f4;
-    }
-
-    .checkin-button {
-      min-height: 54px;
-      margin-top: 16px;
-      font-size: 17px;
-    }
-
-    .footnote {
-      margin-top: 16px;
-      color: #819087;
-      font-size: 12px;
-      line-height: 1.7;
+      font-size: 30px;
+      line-height: 1.35;
+      font-weight: 800;
+      letter-spacing: 1px;
       text-align: center;
     }
 
-    .hidden {
-      display: none !important;
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    p { margin: 8px 0 14px; }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px 18px;
+      margin: 16px 0;
+      box-shadow: 0 4px 16px rgba(159, 78, 114, 0.07);
+    }
+
+    .hidden { display: none !important; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 16px;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      min-height: 56px;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 19px;
+      line-height: 1.4;
+      border-radius: 14px;
+      margin-top: 12px;
+    }
+
+    input {
+      border: 2px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      text-align: center;
+    }
+
+    input:focus {
+      outline: 3px solid #F8D1E1;
+      border-color: var(--pink);
+    }
+
+    button {
+      border: 0;
+      background: var(--pink);
+      color: #fff;
+      font-weight: 750;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    button:hover { background: var(--pink-dark); }
+    button:active { transform: scale(0.99); }
+
+    button.secondary {
+      color: var(--pink-dark);
+      background: #FBEAF1;
+      border: 1px solid #F0D2DF;
+    }
+
+    button.secondary:hover { background: #F6DCE8; }
+
+    button.danger {
+      color: #fff;
+      background: #A43A52;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .login-badge {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: var(--pink-light);
+      color: var(--pink-dark);
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .center, #loginStatus { text-align: center; }
+
+    #loginStatus { margin-bottom: 12px; }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #FFF8FB;
+      border: 1px solid var(--border);
+      margin: 16px auto;
+    }
+
+    #reader video { border-radius: 12px; }
+
+    #reader__dashboard_section_csr button,
+    #reader__dashboard_section_swaplink {
+      font-size: 16px !important;
+    }
+
+    .scan-hint {
+      background: #FFF0F6;
+      border: 1px solid #F6D8E5;
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--pink-dark);
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .status {
+      font-size: 21px;
+      font-weight: 800;
+      text-align: center;
+      padding: 14px 10px;
+      border-radius: 14px;
+      margin: 16px 0;
+      background: var(--pink-light);
+      color: var(--pink-dark);
+      overflow-wrap: anywhere;
+    }
+
+    .ok {
+      color: var(--pink-dark);
+      background: var(--pink-light);
+    }
+
+    .warn {
+      color: var(--orange);
+      background: var(--orange-bg);
+    }
+
+    .err {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    .participant-name {
+      font-size: 32px;
+      font-weight: 850;
+      text-align: center;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      margin: 12px 0 20px;
+    }
+
+    .participant-info {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .field {
+      padding: 14px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .field:last-child { border-bottom: 0; }
+
+    .label {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 22px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    #message {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 650;
+      padding: 12px 4px;
+    }
+
+    .message-card { padding: 14px 18px; }
+
+    .next-button {
+      min-height: 62px;
+      font-size: 21px;
+      margin: 0 0 20px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+      margin: 22px 0 8px;
+    }
+
+    dialog {
+      width: calc(100% - 28px);
+      max-width: 430px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px 20px;
+      color: var(--text);
+      background: #fff;
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    dialog::backdrop { background: rgba(81, 55, 68, 0.48); }
+
+    #confirmText {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 19px;
+      line-height: 1.8;
+      text-align: center;
+      margin: 18px 0;
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .card { padding: 18px 13px; }
+      h1 { font-size: 27px; }
+      .participant-name { font-size: 28px; }
+      .value { font-size: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
+<main>
+  <header class="hero">
+    <div class="hero-icon" aria-label="Q版大象" role="img">🐘</div>
+    <h1>活動報到系統</h1>
+    <p class="subtitle">工作人員專用｜正式版</p>
+  </header>
 
-    <header class="hero">
-      <div class="brand">EVENT CHECK-IN</div>
-      <h1>工作人員報到</h1>
-      <p>
-        請核對參加者資料，再完成報到登記。<br>
-        場次由原本 QR Code 自動帶入。
-      </p>
-    </header>
+  <section class="card" id="loginPanel">
+    <h2>工作人員登入</h2>
+    <p class="muted">請輸入登入者名稱及工作人員 PIN，登入後即可開始掃描報到。</p>
 
-    <section class="card">
-      <div class="event-box">
-        <div class="event-label">目前報到場次</div>
-        <div id="eventName" class="event-name">正在讀取場次……</div>
-      </div>
-
-      <h2 class="section-title">工作人員驗證</h2>
-      <p class="helper">
-        請輸入工作人員 PIN。驗證成功後，系統會查詢這筆 QR Code 對應的參加者。
-      </p>
-
-      <label for="staffPin">工作人員 PIN</label>
+    <form id="loginForm">
       <input
-        id="staffPin"
+        id="deviceName"
+        type="text"
+        maxlength="10"
+        autocomplete="off"
+        placeholder="請輸入登入者（最多 10 個字）"
+        aria-label="登入者"
+        required
+      >
+      <input
+        id="pin"
         type="password"
         inputmode="numeric"
-        autocomplete="off"
-        placeholder="請輸入工作人員 PIN">
+        autocomplete="current-password"
+        placeholder="請輸入工作人員 PIN"
+        aria-label="工作人員 PIN"
+        required
+      >
+      <button id="loginButton" type="submit">登入工作人員系統</button>
+    </form>
+  </section>
 
-      <button id="lookupButton" type="button">
-        驗證 PIN 並查詢資料
-      </button>
+  <!-- 參加者資料放在相機區上方 -->
+  <section class="card hidden" id="participantPanel">
+    <button id="nextButton" class="secondary next-button">掃描下一位</button>
 
-      <div id="message" class="message" role="status" aria-live="polite"></div>
+    <h2>參加者資料</h2>
+    <div id="participantInfo" class="participant-info"></div>
+    <p id="participantStatus" class="status" aria-live="polite"></p>
+    <button id="checkInButton">確認報到</button>
+  </section>
 
-      <div id="staffInfo" class="participant-card"></div>
+  <!-- 相機及登入狀態區放在下方 -->
+  <section class="card hidden" id="scannerPanel">
+    <div id="loginStatus">
+      <span class="login-badge">✓ 工作人員已登入</span>
+    </div>
 
-      <div id="checkInControls" class="hidden">
-        <div class="device-box">
-          <label for="device">報到設備名稱</label>
-          <input
-            id="device"
-            type="text"
-            maxlength="50"
-            value="報到手機1"
-            autocomplete="off">
-          <p class="helper" style="margin:8px 0 0">
-            多支手機可分別設定設備名稱，以利辨識報到紀錄。
-          </p>
-        </div>
+    <h2>📷 掃描參加者 QR Code</h2>
+    <p class="muted">請將參加者的 QR Code 對準相機畫面。</p>
 
-        <button id="checkInButton" class="checkin-button" type="button">
-          確認報到
-        </button>
-      </div>
-    </section>
+    <div id="reader"></div>
 
-    <p class="footnote">
-      婉如基金會活動報到系統<br>
-      請勿將工作人員 PIN 提供給參加者。
-    </p>
-  </main>
+    <div class="scan-hint">
+      請確認參加者出示的是活動報到 QR Code。
+    </div>
 
-  <script>
-    "use strict";
+    <button id="startButton">啟動相機</button>
+    <button id="stopButton" class="secondary">停止相機</button>
+    <button id="logoutButton" class="danger">登出</button>
+  </section>
 
-    // 正式 Apps Script Web App；沿用既有 API Bridge。
-    const GAS_API_URL =
-      "https://script.google.com/macros/s/AKfycbyPPjPvjmdblS0njmuUYXXcLMhxyeCEOUpBBh5p9TaAQILyi2czWrgW1I8B_xZfCkhZMA/exec";
+  <section class="card message-card">
+    <div id="message" role="status" aria-live="polite">請先登入。</div>
+  </section>
 
-    const EVENT_NAME_BY_CODE = {
-      "1115": "婉如基金會在職11/15場次",
-      "1121": "婉如基金會在職11/21場次",
-      "1122": "婉如基金會在職11/22場次"
-    };
+  <p class="footer-note">活動報到系統・工作人員操作介面</p>
+</main>
 
-    const REQUEST_TIMEOUT_MS = 25000;
-    const params = new URLSearchParams(window.location.search);
+<dialog id="confirmDialog">
+  <h2>確認報到</h2>
+  <p id="confirmText">請確認參加者資料。</p>
+  <button id="confirmYes">✓ 確認，執行報到</button>
+  <button id="confirmNo" class="secondary">返回確認資料</button>
+</dialog>
 
-    // 沿用既有 QR Code 網址中的參數，不讓工作人員選場次。
-    const EVENT_CODE = String(params.get("event") || "").trim();
-    const CURRENT_CODE = String(params.get("code") || "").trim();
+<iframe name="postFrame" id="postFrame" class="hidden"></iframe>
 
-    const $ = id => document.getElementById(id);
-    const pendingRequests = new Map();
 
-    let lookupDone = false;
-    let currentParticipant = null;
-    let requestSequence = 0;
+<script>
+"use strict";
 
-    function showMessage(text, type = "") {
-      const el = $("message");
-      el.textContent = String(text || "");
-      el.className = "message" + (type ? " " + type : "");
-    }
+const GAS_API_URL =
+  "https://script.google.com/macros/s/AKfycbyPPjPvjmdblS0njmuUYXXcLMhxyeCEOUpBBh5p9TaAQILyi2czWrgW1I8B_xZfCkhZMA/exec";
 
-    function setBusy(buttonId, busy, busyText) {
-      const button = $(buttonId);
+let currentDeviceName = "";
+let currentPin = "";
 
-      if (!button) return;
+const $ = id => document.getElementById(id);
 
-      if (!button.dataset.originalText) {
-        button.dataset.originalText = button.textContent.trim();
-      }
+let session = ""; // 僅標記目前頁面已通過 PIN 驗證，不存入 localStorage。
+let scanner = null;
+let cameraRunning = false;
+let busy = false;
+let currentCode = "";
+let currentParticipant = null;
 
-      button.disabled = Boolean(busy);
-      button.textContent = busy
-        ? busyText
-        : button.dataset.originalText;
-    }
+/* =========================
+   共用訊息及畫面功能
+========================= */
 
-    function addField(container, label, value) {
-      const row = document.createElement("div");
-      row.className = "field";
+function message(text, type = "") {
+  $("message").className = type;
+  $("message").textContent = text;
+}
 
-      const left = document.createElement("span");
-      left.className = "field-label";
-      left.textContent = label;
+function show(el, yes) {
+  el.classList.toggle("hidden", !yes);
+}
 
-      const right = document.createElement("strong");
-      right.className = "field-value";
-      right.textContent =
-        value === null || value === undefined || value === ""
-          ? "未提供"
-          : String(value);
+function newTicket() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
 
-      row.append(left, right);
-      container.appendChild(row);
-    }
+  return Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
-    function validEvent() {
-      return Object.prototype.hasOwnProperty.call(
-        EVENT_NAME_BY_CODE,
-        EVENT_CODE
-      );
-    }
+/* =========================
+   呼叫正式版 Apps Script API Bridge
+========================= */
 
-    function initPage() {
-      if (!validEvent()) {
-        $("eventName").textContent = "場次資料無效";
-        showMessage(
-          "網址缺少有效的 event 參數，請使用原本正確的報到 QR Code。",
-          "warning"
-        );
-        $("lookupButton").disabled = true;
-        return;
-      }
+const REQUEST_TIMEOUT_MS = 25000;
+const pendingRequests = new Map();
 
-      $("eventName").textContent = EVENT_NAME_BY_CODE[EVENT_CODE];
+window.addEventListener("message", function(event) {
+  const data = event.data;
+  if (!data || data.channel !== "pengwanevent-gas-bridge" || !data.requestId) return;
 
-      if (!CURRENT_CODE) {
-        showMessage(
-          "網址缺少參加者識別碼，請重新掃描原本的報到 QR Code。",
-          "warning"
-        );
-        $("lookupButton").disabled = true;
-        return;
-      }
+  const requestId = String(data.requestId);
+  const pending = pendingRequests.get(requestId);
+  if (!pending) return;
 
-      showMessage("已讀取報到資料，請輸入工作人員 PIN。");
-    }
+  // Apps Script 沙盒可能回報 opaque origin（"null"）。
+  let originAllowed = event.origin === "null";
+  try {
+    const host = new URL(event.origin).hostname;
+    originAllowed = originAllowed || host === "script.google.com" ||
+      host === "googleusercontent.com" || host.endsWith(".googleusercontent.com");
+  } catch (err) {
+    // opaque origin
+  }
+  if (!originAllowed) return;
 
-    /*
-     * 使用既有 ApiBridge.gs 的 POST + iframe + postMessage 方式。
-     * 不使用 google.script.run，因為這個頁面是放在 GitHub Pages。
-     */
-    window.addEventListener("message", function(event) {
-      const data = event.data;
+  clearTimeout(pending.timer);
+  pendingRequests.delete(requestId);
+  if (pending.iframe && pending.iframe.parentNode) pending.iframe.parentNode.removeChild(pending.iframe);
+  if (pending.form && pending.form.parentNode) pending.form.parentNode.removeChild(pending.form);
 
-      if (
-        !data ||
-        data.channel !== "pengwanevent-gas-bridge" ||
-        !data.requestId
-      ) {
-        return;
-      }
+  if (data.ok) pending.resolve(data.data);
+  else pending.reject(new Error(data.error || "Apps Script 後端發生錯誤。"));
+});
 
-      const requestId = String(data.requestId);
-      const pending = pendingRequests.get(requestId);
+function api(method, args = []) {
+  return new Promise((resolve, reject) => {
+    const requestId = "staff_" + Date.now().toString(36) + "_" +
+      Math.random().toString(36).slice(2, 12);
+    const frameName = "gas_frame_" + requestId;
 
-      if (!pending) return;
+    const iframe = document.createElement("iframe");
+    iframe.name = frameName;
+    iframe.title = "背景 API 連線";
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.style.cssText = "position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;border:0";
 
-      let originAllowed = event.origin === "null";
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = GAS_API_URL;
+    form.target = frameName;
+    form.style.display = "none";
 
-      try {
-        const hostname = new URL(event.origin).hostname;
+    const payloadInput = document.createElement("input");
+    payloadInput.type = "hidden";
+    payloadInput.name = "payload";
+    payloadInput.value = JSON.stringify({ method, args: args || [] });
 
-        originAllowed = originAllowed ||
-          hostname === "script.google.com" ||
-          hostname === "googleusercontent.com" ||
-          hostname.endsWith(".googleusercontent.com");
-      } catch (error) {
-        // Google Apps Script 的沙盒回應可能是 opaque origin。
-      }
+    const requestInput = document.createElement("input");
+    requestInput.type = "hidden";
+    requestInput.name = "requestId";
+    requestInput.value = requestId;
+    form.append(payloadInput, requestInput);
 
-      if (!originAllowed) return;
-
-      clearTimeout(pending.timer);
+    const timer = setTimeout(() => {
       pendingRequests.delete(requestId);
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      if (form.parentNode) form.parentNode.removeChild(form);
+      reject(new Error("連線逾時：正式 Apps Script 後端沒有回覆。請確認 ApiBridge.gs 已更新並部署最新版本。"));
+    }, REQUEST_TIMEOUT_MS);
 
-      if (pending.iframe && pending.iframe.parentNode) {
-        pending.iframe.parentNode.removeChild(pending.iframe);
+    pendingRequests.set(requestId, { resolve, reject, timer, iframe, form });
+    document.body.append(iframe, form);
+
+    try {
+      form.submit();
+    } catch (err) {
+      clearTimeout(timer);
+      pendingRequests.delete(requestId);
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      if (form.parentNode) form.parentNode.removeChild(form);
+      reject(new Error("無法送出請求：" + (err.message || String(err))));
+    }
+  });
+}
+
+/* =========================
+   相機功能
+========================= */
+
+async function stopCamera() {
+  if (!scanner) return;
+
+  try {
+    if (cameraRunning) {
+      await scanner.stop();
+    }
+  } catch (err) {
+    console.warn("停止相機時發生問題：", err);
+  }
+
+  cameraRunning = false;
+}
+
+async function startScanner() {
+  if (busy || cameraRunning) return;
+
+  if (!session) {
+    message("工作階段不存在，請重新登入。", "err");
+    return;
+  }
+
+  if (!window.Html5Qrcode) {
+    message(
+      "掃描元件載入失敗，請確認網路後重新整理。",
+      "err"
+    );
+    return;
+  }
+
+  try {
+    if (!scanner) {
+      scanner = new Html5Qrcode("reader");
+    }
+
+    message("正在啟動相機……");
+
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      decodedText => {
+        if (!busy && !currentCode) {
+          handleScan(decodedText);
+        }
+      },
+      () => {}
+    );
+
+    cameraRunning = true;
+    message("相機已啟動，請掃描參加者 QR Code。", "ok");
+
+  } catch (err) {
+    cameraRunning = false;
+
+    message(
+      "無法啟動相機。\n" +
+      (err && err.message ? err.message : String(err)) +
+      "\n\n請確認使用 HTTPS、瀏覽器相機權限已開啟，並允許此網站使用相機。",
+      "err"
+    );
+  }
+}
+
+function extractCode(text) {
+  const raw = String(text || "").trim();
+
+  try {
+    const url = new URL(raw);
+    const code = url.searchParams.get("code");
+
+    if (code) return code.trim();
+  } catch (_) {}
+
+  if (/^[A-Za-z0-9_-]{4,80}$/.test(raw)) {
+    return raw;
+  }
+
+  throw new Error("無法從 QR Code 讀取有效的報到識別碼。");
+}
+
+/* =========================
+   掃描及查詢參加者
+========================= */
+
+async function handleScan(decodedText) {
+  if (busy || currentCode) return;
+
+  busy = true;
+
+  try {
+    await stopCamera();
+
+    const code = extractCode(decodedText);
+
+    message("已讀取 QR Code，正在查詢參加者……");
+
+    const result = await api("getStaffParticipantByCode", [code, currentPin]);
+
+    if (!result.success) {
+      if (/工作階段|重新驗證|逾期|無效|PIN 不正確|PIN 驗證/.test(result.message || "")) {
+        await expireSession(result.message);
+        return;
       }
 
-      if (pending.form && pending.form.parentNode) {
-        pending.form.parentNode.removeChild(pending.form);
-      }
+      throw new Error(result.message || "查詢失敗。");
+    }
 
-      if (data.ok) {
-        pending.resolve(data.data);
-      } else {
-        pending.reject(
-          new Error(data.error || "Apps Script 後端發生錯誤。")
-        );
-      }
+    currentCode = code;
+    currentParticipant = result.participant;
+
+    renderParticipant(currentParticipant);
+
+    show($("participantPanel"), true);
+
+    message("查詢成功，請確認參加者資料。", "ok");
+
+    $("participantPanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     });
 
-    function callServer(method, args) {
-      return new Promise(function(resolve, reject) {
-        requestSequence += 1;
+  } catch (err) {
+    message(err.message || String(err), "err");
 
-        const requestId =
-          "staff_" +
-          Date.now().toString(36) +
-          "_" +
-          requestSequence +
-          "_" +
-          Math.random().toString(36).slice(2, 8);
+    currentCode = "";
+    currentParticipant = null;
 
-        const frameName = "gas_frame_" + requestId;
+  } finally {
+    busy = false;
+  }
+}
 
-        const iframe = document.createElement("iframe");
-        iframe.name = frameName;
-        iframe.title = "背景 API 連線";
-        iframe.setAttribute("aria-hidden", "true");
-        iframe.style.cssText =
-          "position:fixed;left:-10000px;top:-10000px;" +
-          "width:1px;height:1px;border:0";
+/* =========================
+   顯示參加者資料
+   注意：此函式只負責更新畫面
+========================= */
 
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = GAS_API_URL;
-        form.target = frameName;
-        form.style.display = "none";
+function renderParticipant(p) {
+  const info = $("participantInfo");
 
-        const payloadInput = document.createElement("input");
-        payloadInput.type = "hidden";
-        payloadInput.name = "payload";
-        payloadInput.value = JSON.stringify({
-          method: method,
-          args: args || []
-        });
+  info.replaceChildren();
 
-        const requestInput = document.createElement("input");
-        requestInput.type = "hidden";
-        requestInput.name = "requestId";
-        requestInput.value = requestId;
+  const name = document.createElement("div");
+  name.className = "participant-name";
+  name.textContent = p.name || "未提供姓名";
 
-        form.append(payloadInput, requestInput);
+  info.appendChild(name);
 
-        const timer = setTimeout(function() {
-          pendingRequests.delete(requestId);
+  const fields = [
+    ["期別學號", p.studentId],
+    ["參加人數", p.count],
+    ["報到時間", p.checkInTime || "—"],
+    ["報到設備", p.device || "—"]
+  ];
 
-          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          if (form.parentNode) form.parentNode.removeChild(form);
+  fields.forEach(([label, value]) => {
+    const row = document.createElement("div");
+    row.className = "field";
 
-          reject(
-            new Error(
-              "後端連線逾時。請確認 ApiBridge.gs 已部署最新版本。"
-            )
-          );
-        }, REQUEST_TIMEOUT_MS);
+    const labelEl = document.createElement("div");
+    labelEl.className = "label";
+    labelEl.textContent = label;
 
-        pendingRequests.set(requestId, {
-          resolve,
-          reject,
-          timer,
-          iframe,
-          form
-        });
+    const valueEl = document.createElement("div");
+    valueEl.className = "value";
 
-        document.body.append(iframe, form);
+    valueEl.textContent =
+      value == null || value === "" ? "—" : value;
 
-        try {
-          form.submit();
-        } catch (error) {
-          clearTimeout(timer);
-          pendingRequests.delete(requestId);
+    row.append(labelEl, valueEl);
+    info.appendChild(row);
+  });
 
-          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          if (form.parentNode) form.parentNode.removeChild(form);
+  const already = p.status === "已報到";
 
-          reject(error);
-        }
-      });
-    }
+  const statusEl = $("participantStatus");
 
-    function renderParticipant(participant) {
-      if (!participant) {
-        lookupDone = false;
-        currentParticipant = null;
-        $("staffInfo").replaceChildren();
-        $("checkInControls").classList.add("hidden");
-        showMessage("後端沒有回傳參加者資料。", "warning");
+  statusEl.textContent = already
+    ? "✓ 此參加者已經報到"
+    : "尚未報到";
+
+  statusEl.className =
+    "status " + (already ? "warn" : "ok");
+
+  statusEl.classList.toggle(
+    "already-checked-in",
+    already
+  );
+
+  const checkInButton = $("checkInButton");
+
+  checkInButton.disabled = already;
+
+  checkInButton.textContent = already
+    ? "已報到，不可重複報到"
+    : "確認報到";
+
+  checkInButton.classList.toggle(
+    "already-checked-in",
+    already
+  );
+}
+
+/* =========================
+   確認報到按鈕
+   事件只註冊一次
+========================= */
+
+$("checkInButton").addEventListener("click", () => {
+  if (!currentParticipant || !currentCode || busy) return;
+
+  if (currentParticipant.status === "已報到") {
+    message(
+      "此參加者已經報到，不會再次寫入。",
+      "warn"
+    );
+    return;
+  }
+
+  $("confirmText").textContent =
+    "確認為「" + currentParticipant.name +
+    "」執行報到？\n期別學號：" +
+    currentParticipant.studentId +
+    "\n參加人數：" + currentParticipant.count;
+
+  $("confirmDialog").showModal();
+});
+
+/* =========================
+   取消確認
+========================= */
+
+$("confirmNo").addEventListener("click", () => {
+  $("confirmDialog").close();
+});
+
+/* =========================
+   執行報到
+========================= */
+
+$("confirmYes").addEventListener("click", async () => {
+  $("confirmDialog").close();
+
+  if (busy || !currentCode || !session) return;
+
+  if (
+    currentParticipant &&
+    currentParticipant.status === "已報到"
+  ) {
+    message(
+      "此參加者已經報到，不會再次寫入。",
+      "warn"
+    );
+    renderParticipant(currentParticipant);
+    return;
+  }
+
+  busy = true;
+  $("checkInButton").disabled = true;
+
+  message("正在寫入報到資料……");
+
+  try {
+    const result = await api("staffCheckInByCode", [currentCode, currentDeviceName, currentPin]);
+
+    if (!result.success) {
+      if (/工作階段|重新驗證|逾期|無效|PIN 不正確|PIN 驗證/.test(result.message || "")) {
+        await expireSession(result.message);
         return;
       }
 
-      currentParticipant = participant;
-      lookupDone = true;
-
-      const container = $("staffInfo");
-      container.replaceChildren();
-
-      addField(
-        container,
-        "場次",
-        participant.eventName || EVENT_NAME_BY_CODE[EVENT_CODE]
-      );
-      addField(container, "姓名", participant.name);
-      addField(container, "期別學號", participant.studentId);
-      addField(
-        container,
-        "報到狀態",
-        participant.status || "尚未報到"
-      );
-      addField(
-        container,
-        "報到時間",
-        participant.checkInTime || "尚未報到"
-      );
-
-      $("checkInControls").classList.remove("hidden");
-
-      const alreadyCheckedIn = participant.status === "已報到";
-      $("checkInButton").disabled = alreadyCheckedIn;
-
-      if (alreadyCheckedIn) {
-        showMessage(
-          "這位參加者已經報到過了，不能重複登記。",
-          "warning"
-        );
-      } else {
-        showMessage(
-          "請核對場次與參加者姓名，確認無誤後再按報到。",
-          "success"
-        );
-      }
+      throw new Error(result.message || "報到失敗。");
     }
 
-    async function lookupStaffParticipant() {
-      const pin = $("staffPin").value.trim();
+    currentParticipant = result.participant;
 
-      if (!validEvent() || !CURRENT_CODE) {
-        showMessage(
-          "報到網址缺少
+    renderParticipant(currentParticipant);
+
+    if (result.already) {
+      message(
+        "此參加者已經報到，系統未重複寫入。",
+        "warn"
+      );
+    } else if (result.ok) {
+      message("✓ 報到完成！", "ok");
+    } else {
+      message(
+        "後端未確認報到完成，請核對試算表。",
+        "err"
+      );
+    }
+
+  } catch (err) {
+    message(
+      (err.message || String(err)) +
+      "\n若不確定後端是否已寫入，請先重新查詢，不要連續重試。",
+      "err"
+    );
+
+  } finally {
+    busy = false;
+
+    $("checkInButton").disabled =
+      !currentParticipant ||
+      currentParticipant.status === "已報到";
+  }
+});
+
+/* =========================
+   掃描下一位
+========================= */
+
+$("nextButton").addEventListener("click", async () => {
+  if (busy) return;
+
+  currentCode = "";
+  currentParticipant = null;
+
+  show($("participantPanel"), false);
+
+  message("準備掃描下一位……");
+
+  $("scannerPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  await startScanner();
+});
+
+/* =========================
+   啟動／停止相機
+========================= */
+
+$("startButton").addEventListener("click", startScanner);
+
+$("stopButton").addEventListener("click", async () => {
+  await stopCamera();
+
+  message("相機已停止。按「啟動相機」可繼續掃描。");
+});
+
+/* =========================
+   工作階段失效
+========================= */
+
+async function expireSession(reason) {
+  await stopCamera();
+
+  session = "";
+  currentPin = "";
+  currentDeviceName = "";
+
+  currentCode = "";
+  currentParticipant = null;
+
+  show($("loginPanel"), true);
+  show($("scannerPanel"), false);
+  show($("participantPanel"), false);
+
+  message(
+    (reason || "工作階段已失效。") +
+    "\n請重新輸入工作人員 PIN。",
+    "err"
+  );
+
+  $("loginPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+/* =========================
+   登出
+========================= */
+
+$("logoutButton").addEventListener("click", async () => {
+  await stopCamera();
+
+  session = "";
+  currentPin = "";
+  currentDeviceName = "";
+  currentCode = "";
+  currentParticipant = null;
+
+
+  show($("loginPanel"), true);
+  show($("scannerPanel"), false);
+  show($("participantPanel"), false);
+
+  message("已登出。");
+
+  $("loginPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+/* =========================
+   工作人員登入
+========================= */
+
+$("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (busy) return;
+
+  const pin = $("pin").value.trim();
+  const deviceName = $("deviceName").value.trim();
+
+  if (!deviceName) {
+    message("請輸入登入者名稱。", "err");
+    $("deviceName").focus();
+    return;
+  }
+
+  if (deviceName.length > 10) {
+    message("登入者名稱最多只能輸入 10 個字元。", "err");
+    $("deviceName").focus();
+    return;
+  }
+
+  if (!pin) {
+    message("請輸入工作人員 PIN。", "err");
+    return;
+  }
+
+  busy = true;
+  $("loginButton").disabled = true;
+
+  message("正在驗證工作人員……");
+
+  try {
+    const result = await api("verifyStaffPin", [pin]);
+
+    if (!result || result.success !== true) {
+      throw new Error((result && result.message) || "工作人員 PIN 驗證失敗。");
+    }
+
+    // PIN 僅保存在目前頁面的記憶體，查詢與報到時由後端再次驗證。
+    currentPin = pin;
+    session = "verified";
+    currentDeviceName = deviceName;
+
+    $("pin").value = "";
+
+    show($("loginPanel"), false);
+    show($("participantPanel"), false);
+    show($("scannerPanel"), true);
+
+    message("PIN 驗證成功（登入者：" + currentDeviceName + "），請啟動相機。", "ok");
+    $("loginStatus").innerHTML =
+      '<span class="login-badge">✓ 已登入：' +
+      currentDeviceName.replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      })[char]) +
+      '</span>';
+
+    $("scannerPanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  } catch (err) {
+    message(err.message || String(err), "err");
+
+  } finally {
+    busy = false;
+    $("loginButton").disabled = false;
+  }
+});
+
+/* =========================
+   頁面初始狀態
+   每次開啟都要求重新登入
+========================= */
+
+show($("loginPanel"), true);
+show($("scannerPanel"), false);
+show($("participantPanel"), false);
+
+message("請登入後開始報到。");
+</script>
+
+</body>
+</html>
