@@ -693,6 +693,31 @@ function isAlreadyCheckedInStatus(value) {
   return ["已報到", "已完成報到", "報到完成"].indexOf(normalized) >= 0;
 }
 
+
+function getEventDisplayName(event) {
+  if (event == null || event === "") {
+    return "—";
+  }
+
+  const value = String(event).trim();
+
+  // 將場次代碼轉成正式場次名稱
+  if (value === "1115" || value.includes("11/15")) {
+    return "婉如基金會在職11/15場次";
+  }
+
+  if (value === "1121" || value.includes("11/21")) {
+    return "婉如基金會在職11/21場次";
+  }
+
+  if (value === "1122" || value.includes("11/22")) {
+    return "婉如基金會在職11/22場次";
+  }
+
+  // 如果後端已經傳回完整場次名稱，就直接顯示
+  return value;
+}
+
 function renderParticipant(p) {
   const info = $("participantInfo");
 
@@ -705,6 +730,7 @@ function renderParticipant(p) {
   info.appendChild(name);
 
   const fields = [
+    ["參加場次", getEventDisplayName(p.event)],
     ["期別學號", p.studentId],
     ["參加人數", p.count],
     ["報到時間", p.checkInTime || "—"],
