@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -27,7 +28,6 @@
       --red-bg: #FFF0EF;
     }
 
-    /* 已報到提示：大字、粗體、紅色 */
     .already-checked-in {
       color: #A93232 !important;
       font-size: 26px !important;
@@ -55,48 +55,49 @@
     }
 
     .hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 4px 18px;
-}
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 4px 18px;
+    }
 
-.hero-brand {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  white-space: nowrap;
-}
+    .hero-brand {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      white-space: nowrap;
+    }
 
-.hero-icon {
-  display: flex;
-  flex: 0 0 64px;
-  width: 64px;
-  height: 64px;
-  margin: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  background: linear-gradient(145deg, #F8DCE9, #DCC8F0);
-  border: 2px solid #DCCDEB;
-  box-shadow: 0 5px 14px rgba(169, 139, 203, 0.18);
-  font-size: 40px;
-}
+    .hero-icon {
+      display: flex;
+      flex: 0 0 64px;
+      width: 64px;
+      height: 64px;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #F8DCE9, #DCC8F0);
+      border: 2px solid #DCCDEB;
+      box-shadow: 0 5px 14px rgba(169, 139, 203, 0.18);
+      font-size: 40px;
+    }
 
-h1 {
-  flex: 0 1 auto;
-  min-width: 0;
-  margin: 0;
-  font-size: clamp(21px, 5.8vw, 30px);
-  line-height: 1.3;
-  font-weight: 850;
-  letter-spacing: 0.5px;
-  text-align: left;
-  white-space: nowrap;
-}
+    h1 {
+      flex: 0 1 auto;
+      min-width: 0;
+      margin: 0;
+      font-size: clamp(21px, 5.8vw, 30px);
+      line-height: 1.3;
+      font-weight: 850;
+      letter-spacing: 0.5px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
     h2 {
       margin: 0 0 14px;
       font-size: 24px;
@@ -189,6 +190,26 @@ h1 {
     button.danger {
       color: #fff;
       background: #A93232;
+    }
+
+    /* 啟動相機：使用醒目的紅色 */
+    #startButton {
+      color: #fff;
+      background: #A93232;
+    }
+
+    #startButton:hover {
+      background: #842626;
+    }
+
+    /* 登出：改為粉色 */
+    #logoutButton {
+      color: #fff;
+      background: var(--pink);
+    }
+
+    #logoutButton:hover {
+      background: var(--pink-dark);
     }
 
     button:disabled {
@@ -311,26 +332,25 @@ h1 {
 
     .message-card { padding: 14px 18px; }
 
-.next-button {
-  min-height: 62px;
-  font-size: 21px;
-  font-weight: 850;
-  margin: 0 0 20px;
+    /* 掃描下一位：醒目的粉橘色 */
+    .next-button {
+      min-height: 62px;
+      font-size: 21px;
+      font-weight: 850;
+      margin: 0 0 20px;
+      color: #FFFFFF !important;
+      background: linear-gradient(100deg, #F29A8B, #F5A66F) !important;
+      border: 2px solid #ED927B;
+      box-shadow: 0 4px 10px rgba(237, 146, 123, 0.28);
+    }
 
-  /* 醒目的粉橘色 */
-  color: #FFFFFF !important;
-  background: linear-gradient(100deg, #F29A8B, #F5A66F) !important;
-  border: 2px solid #ED927B;
-  box-shadow: 0 4px 10px rgba(237, 146, 123, 0.28);
-}
+    .next-button:hover {
+      background: linear-gradient(100deg, #E98278, #ED914F) !important;
+    }
 
-.next-button:hover {
-  background: linear-gradient(100deg, #E98278, #ED914F) !important;
-}
-
-.next-button:active {
-  transform: scale(0.98);
-}
+    .next-button:active {
+      transform: scale(0.98);
+    }
 
     .footer-note {
       color: var(--muted);
@@ -369,7 +389,14 @@ h1 {
       }
 
       .card { padding: 18px 13px; }
-      h1 { font-size: 27px; }
+      h1 { font-size: clamp(20px, 5.5vw, 25px); }
+      .hero-brand { gap: 7px; }
+      .hero-icon {
+        flex-basis: 56px;
+        width: 56px;
+        height: 56px;
+        font-size: 35px;
+      }
       .participant-name { font-size: 28px; }
       .value { font-size: 20px; }
     }
@@ -383,12 +410,15 @@ h1 {
 <body>
 <main>
   <header class="hero">
- <div class="hero-brand">
-  <div class="hero-icon" aria-label="Q版大象" role="img">🐘</div>
-  <h1>在職報到系統</h1>
-</div>
+    <div class="hero-brand">
+      <div class="hero-icon" aria-label="Q版大象" role="img">🐘</div>
+      <h1>在職報到系統</h1>
+    </div>
+
     <p class="subtitle">工作人員專用｜測試版</p>
-    <div class="test-banner" role="status">測試版｜可登入及查詢，但不會寫入正式報到資料</div>
+    <div class="test-banner" role="status">
+      測試版｜可登入及查詢，但不會寫入正式報到資料
+    </div>
   </header>
 
   <section class="card" id="loginPanel">
@@ -422,6 +452,7 @@ h1 {
     <form id="setupPinForm" class="hidden" autocomplete="off">
       <h2 style="margin-top:22px">設定正式工作人員 PIN</h2>
       <p class="muted">僅供正式系統第一次啟用。需要管理驗證碼；設定完成後，此畫面不能再次修改 PIN。</p>
+
       <input
         id="setupKey"
         type="password"
@@ -454,14 +485,15 @@ h1 {
         aria-label="確認新的工作人員 PIN"
         required
       >
+
       <button id="saveSetupPinButton" type="submit">儲存正式 PIN</button>
       <button id="cancelSetupButton" type="button" class="secondary">取消</button>
     </form>
   </section>
 
-  <!-- 參加者資料放在相機區上方 -->
+  <!-- 參加者資料 -->
   <section class="card hidden" id="participantPanel">
-    <button id="nextButton" class="secondary next-button">掃描下一位</button>
+    <button id="nextButton" class="next-button">掃描下一位</button>
 
     <h2>參加者資料</h2>
     <div id="participantInfo" class="participant-info"></div>
@@ -469,12 +501,8 @@ h1 {
     <button id="checkInButton">確認報到</button>
   </section>
 
-  <!-- 相機及登入狀態區放在下方 -->
+  <!-- 相機及工作人員操作區 -->
   <section class="card hidden" id="scannerPanel">
-    <div id="loginStatus">
-      <span class="login-badge">✓ 工作人員已登入</span>
-    </div>
-
     <h2>📷 掃描參加者 QR Code</h2>
     <p class="muted">請將參加者的 QR Code 對準相機畫面。</p>
 
@@ -486,7 +514,12 @@ h1 {
 
     <button id="startButton">啟動相機</button>
     <button id="stopButton" class="secondary">停止相機</button>
-    <button id="logoutButton" class="danger">登出</button>
+    <button id="logoutButton">登出</button>
+
+    <!-- 已登入字樣移至登出按鈕下方 -->
+    <div id="loginStatus" style="text-align:center; margin-top:14px;">
+      <span class="login-badge">✓ 工作人員已登入</span>
+    </div>
   </section>
 
   <section class="card message-card">
@@ -503,8 +536,6 @@ h1 {
   <button id="confirmNo" class="secondary">返回確認資料</button>
 </dialog>
 
-<iframe name="postFrame" id="postFrame" class="hidden"></iframe>
-
 <script>
 "use strict";
 
@@ -516,7 +547,7 @@ let currentPin = "";
 
 const $ = id => document.getElementById(id);
 
-let session = ""; // 僅標記目前頁面已通過 PIN 驗證，不存入 localStorage。
+let session = "";
 let scanner = null;
 let cameraRunning = false;
 let busy = false;
@@ -537,7 +568,7 @@ function show(el, yes) {
 }
 
 /* =========================
-   呼叫正式版 Apps Script API Bridge
+   呼叫 Apps Script API
 ========================= */
 
 const REQUEST_TIMEOUT_MS = 25000;
@@ -545,50 +576,76 @@ const pendingRequests = new Map();
 
 window.addEventListener("message", function(event) {
   const data = event.data;
-  if (!data || data.channel !== "pengwanevent-gas-bridge" || !data.requestId) return;
+
+  if (
+    !data ||
+    data.channel !== "pengwanevent-gas-bridge" ||
+    !data.requestId
+  ) return;
 
   const requestId = String(data.requestId);
   const pending = pendingRequests.get(requestId);
+
   if (!pending) return;
 
-  // Apps Script 沙盒可能回報 opaque origin（"null"）。
   let originAllowed = event.origin === "null";
+
   try {
     const host = new URL(event.origin).hostname;
-    originAllowed = originAllowed || host === "script.google.com" ||
-      host === "googleusercontent.com" || host.endsWith(".googleusercontent.com");
-  } catch (err) {
-    // opaque origin
-  }
+
+    originAllowed = originAllowed ||
+      host === "script.google.com" ||
+      host === "googleusercontent.com" ||
+      host.endsWith(".googleusercontent.com");
+  } catch (err) {}
+
   if (!originAllowed) return;
 
   clearTimeout(pending.timer);
   pendingRequests.delete(requestId);
-  if (pending.iframe && pending.iframe.parentNode) pending.iframe.parentNode.removeChild(pending.iframe);
-  if (pending.form && pending.form.parentNode) pending.form.parentNode.removeChild(pending.form);
 
-  if (data.ok) pending.resolve(data.data);
-  else pending.reject(new Error(data.error || "Apps Script 後端發生錯誤。"));
+  if (pending.iframe && pending.iframe.parentNode) {
+    pending.iframe.parentNode.removeChild(pending.iframe);
+  }
+
+  if (pending.form && pending.form.parentNode) {
+    pending.form.parentNode.removeChild(pending.form);
+  }
+
+  if (data.ok) {
+    pending.resolve(data.data);
+  } else {
+    pending.reject(new Error(data.error || "Apps Script 後端發生錯誤。"));
+  }
 });
 
 function api(method, args = []) {
-  // 測試版安全護欄：禁止會寫入正式資料的操作。
-  if (method === "staffCheckInByCode" || method === "setupStaffPinFromApp") {
+  /*
+   * 測試版安全限制：
+   * 禁止執行正式報到及正式 PIN 設定。
+   */
+  if (
+    method === "staffCheckInByCode" ||
+    method === "setupStaffPinFromApp"
+  ) {
     return Promise.reject(new Error(
       "這是 staff-test 測試版，已停用正式資料寫入。確認畫面與操作流程時，不會真的執行報到或設定 PIN。"
     ));
   }
 
   return new Promise((resolve, reject) => {
-    const requestId = "staff_test_" + Date.now().toString(36) + "_" +
+    const requestId = "staff_test_" +
+      Date.now().toString(36) + "_" +
       Math.random().toString(36).slice(2, 12);
+
     const frameName = "gas_frame_" + requestId;
 
     const iframe = document.createElement("iframe");
     iframe.name = frameName;
     iframe.title = "背景 API 連線";
     iframe.setAttribute("aria-hidden", "true");
-    iframe.style.cssText = "position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;border:0";
+    iframe.style.cssText =
+      "position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;border:0";
 
     const form = document.createElement("form");
     form.method = "POST";
@@ -599,22 +656,37 @@ function api(method, args = []) {
     const payloadInput = document.createElement("input");
     payloadInput.type = "hidden";
     payloadInput.name = "payload";
-    payloadInput.value = JSON.stringify({ method, args: args || [] });
+    payloadInput.value = JSON.stringify({
+      method,
+      args: args || []
+    });
 
     const requestInput = document.createElement("input");
     requestInput.type = "hidden";
     requestInput.name = "requestId";
     requestInput.value = requestId;
+
     form.append(payloadInput, requestInput);
 
     const timer = setTimeout(() => {
       pendingRequests.delete(requestId);
+
       if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
       if (form.parentNode) form.parentNode.removeChild(form);
-      reject(new Error("連線逾時：正式 Apps Script 後端沒有回覆。請確認 ApiBridge.gs 已更新並部署最新版本。"));
+
+      reject(new Error(
+        "連線逾時：正式 Apps Script 後端沒有回覆。請確認 ApiBridge.gs 已更新並部署最新版本。"
+      ));
     }, REQUEST_TIMEOUT_MS);
 
-    pendingRequests.set(requestId, { resolve, reject, timer, iframe, form });
+    pendingRequests.set(requestId, {
+      resolve,
+      reject,
+      timer,
+      iframe,
+      form
+    });
+
     document.body.append(iframe, form);
 
     try {
@@ -622,8 +694,10 @@ function api(method, args = []) {
     } catch (err) {
       clearTimeout(timer);
       pendingRequests.delete(requestId);
+
       if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
       if (form.parentNode) form.parentNode.removeChild(form);
+
       reject(new Error("無法送出請求：" + (err.message || String(err))));
     }
   });
@@ -656,10 +730,7 @@ async function startScanner() {
   }
 
   if (!window.Html5Qrcode) {
-    message(
-      "掃描元件載入失敗，請確認網路後重新整理。",
-      "err"
-    );
+    message("掃描元件載入失敗，請確認網路後重新整理。", "err");
     return;
   }
 
@@ -729,7 +800,10 @@ async function handleScan(decodedText) {
 
     message("已讀取 QR Code，正在查詢參加者……");
 
-    const result = await api("getStaffParticipantByCode", [code, currentPin]);
+    const result = await api(
+      "getStaffParticipantByCode",
+      [code, currentPin]
+    );
 
     if (!result.success) {
       if (/工作階段|重新驗證|逾期|無效|PIN 不正確|PIN 驗證/.test(result.message || "")) {
@@ -744,7 +818,6 @@ async function handleScan(decodedText) {
     currentParticipant = result.participant;
 
     renderParticipant(currentParticipant);
-
     show($("participantPanel"), true);
 
     message("查詢成功，請確認參加者資料。", "ok");
@@ -756,7 +829,6 @@ async function handleScan(decodedText) {
 
   } catch (err) {
     message(err.message || String(err), "err");
-
     currentCode = "";
     currentParticipant = null;
 
@@ -767,26 +839,26 @@ async function handleScan(decodedText) {
 
 /* =========================
    顯示參加者資料
-   注意：此函式只負責更新畫面
+   不顯示參加人數
 ========================= */
 
 function isAlreadyCheckedInStatus(value) {
-  const normalized = String(value || "").trim().replace(/[\s\u3000]/g, "");
+  const normalized = String(value || "")
+    .trim()
+    .replace(/[\s\u3000]/g, "");
+
   return ["已報到", "已完成報到", "報到完成"].indexOf(normalized) >= 0;
 }
 
 function renderParticipant(p) {
   const info = $("participantInfo");
-
   info.replaceChildren();
 
   const name = document.createElement("div");
   name.className = "participant-name";
   name.textContent = p.name || "未提供姓名";
-
   info.appendChild(name);
 
-  // 不顯示參加人數
   const fields = [
     ["期別學號", p.studentId],
     ["報到時間", p.checkInTime || "—"],
@@ -803,7 +875,6 @@ function renderParticipant(p) {
 
     const valueEl = document.createElement("div");
     valueEl.className = "value";
-
     valueEl.textContent =
       value == null || value === "" ? "—" : value;
 
@@ -812,52 +883,37 @@ function renderParticipant(p) {
   });
 
   const already = isAlreadyCheckedInStatus(p.status);
-
   const statusEl = $("participantStatus");
 
   statusEl.textContent = already
     ? "✓ 此參加者已經報到"
     : "尚未報到";
 
-  statusEl.className =
-    "status " + (already ? "warn" : "ok");
-
-  statusEl.classList.toggle(
-    "already-checked-in",
-    already
-  );
+  statusEl.className = "status " + (already ? "warn" : "ok");
+  statusEl.classList.toggle("already-checked-in", already);
 
   const checkInButton = $("checkInButton");
 
   checkInButton.disabled = already;
-
   checkInButton.textContent = already
     ? "已報到，不可重複報到"
     : "確認報到";
 
-  checkInButton.classList.toggle(
-    "already-checked-in",
-    already
-  );
+  checkInButton.classList.toggle("already-checked-in", already);
 }
 
 /* =========================
    確認報到按鈕
-   事件只註冊一次
 ========================= */
 
 $("checkInButton").addEventListener("click", () => {
   if (!currentParticipant || !currentCode || busy) return;
 
   if (isAlreadyCheckedInStatus(currentParticipant.status)) {
-    message(
-      "此參加者已經報到，不會再次寫入。",
-      "warn"
-    );
+    message("此參加者已經報到，不會再次寫入。", "warn");
     return;
   }
 
-  // 確認視窗不顯示參加人數
   $("confirmText").textContent =
     "確認為「" + currentParticipant.name +
     "」執行報到？\n期別學號：" +
@@ -866,16 +922,13 @@ $("checkInButton").addEventListener("click", () => {
   $("confirmDialog").showModal();
 });
 
-/* =========================
-   取消確認
-========================= */
-
 $("confirmNo").addEventListener("click", () => {
   $("confirmDialog").close();
 });
 
 /* =========================
    執行報到
+   測試版會由 api() 安全限制攔截
 ========================= */
 
 $("confirmYes").addEventListener("click", async () => {
@@ -887,10 +940,7 @@ $("confirmYes").addEventListener("click", async () => {
     currentParticipant &&
     isAlreadyCheckedInStatus(currentParticipant.status)
   ) {
-    message(
-      "此參加者已經報到，不會再次寫入。",
-      "warn"
-    );
+    message("此參加者已經報到，不會再次寫入。", "warn");
     renderParticipant(currentParticipant);
     return;
   }
@@ -901,7 +951,10 @@ $("confirmYes").addEventListener("click", async () => {
   message("正在寫入報到資料……");
 
   try {
-    const result = await api("staffCheckInByCode", [currentCode, currentDeviceName, currentPin]);
+    const result = await api(
+      "staffCheckInByCode",
+      [currentCode, currentDeviceName, currentPin]
+    );
 
     if (!result.success) {
       if (/工作階段|重新驗證|逾期|無效|PIN 不正確|PIN 驗證/.test(result.message || "")) {
@@ -913,21 +966,14 @@ $("confirmYes").addEventListener("click", async () => {
     }
 
     currentParticipant = result.participant;
-
     renderParticipant(currentParticipant);
 
     if (result.already) {
-      message(
-        "此參加者已經報到，系統未重複寫入。",
-        "warn"
-      );
+      message("此參加者已經報到，系統未重複寫入。", "warn");
     } else if (result.ok) {
       message("✓ 報到完成！", "ok");
     } else {
-      message(
-        "後端未確認報到完成，請核對試算表。",
-        "err"
-      );
+      message("後端未確認報到完成，請核對試算表。", "err");
     }
 
   } catch (err) {
@@ -957,7 +1003,6 @@ $("nextButton").addEventListener("click", async () => {
   currentParticipant = null;
 
   show($("participantPanel"), false);
-
   message("準備掃描下一位……");
 
   $("scannerPanel").scrollIntoView({
@@ -976,7 +1021,6 @@ $("startButton").addEventListener("click", startScanner);
 
 $("stopButton").addEventListener("click", async () => {
   await stopCamera();
-
   message("相機已停止。按「啟動相機」可繼續掃描。");
 });
 
@@ -990,7 +1034,6 @@ async function expireSession(reason) {
   session = "";
   currentPin = "";
   currentDeviceName = "";
-
   currentCode = "";
   currentParticipant = null;
 
@@ -1036,14 +1079,18 @@ $("logoutButton").addEventListener("click", async () => {
 });
 
 /* =========================
-   正式 PIN 初次設定（在 APP 內完成）
+   PIN 初次設定
+   測試版會由 api() 安全限制攔截
 ========================= */
 
 $("showSetupButton").addEventListener("click", () => {
   show($("setupPinForm"), true);
   $("setupKey").focus();
   message("請輸入初次設定驗證碼及新的正式 PIN。", "");
-  $("setupPinForm").scrollIntoView({ behavior: "smooth", block: "center" });
+  $("setupPinForm").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
 });
 
 $("cancelSetupButton").addEventListener("click", () => {
@@ -1078,7 +1125,9 @@ $("setupPinForm").addEventListener("submit", async event => {
     return;
   }
 
-  if (!confirm("確定要將此 PIN 設為正式系統唯一的工作人員 PIN 嗎？設定後不能從此畫面再次修改。")) return;
+  if (!confirm("確定要將此 PIN 設為正式系統唯一的工作人員 PIN 嗎？設定後不能從此畫面再次修改。")) {
+    return;
+  }
 
   busy = true;
   $("saveSetupPinButton").disabled = true;
@@ -1114,7 +1163,6 @@ $("setupPinForm").addEventListener("submit", async event => {
 
 $("loginForm").addEventListener("submit", async event => {
   event.preventDefault();
-
   if (busy) return;
 
   const pin = $("pin").value.trim();
@@ -1139,7 +1187,6 @@ $("loginForm").addEventListener("submit", async event => {
 
   busy = true;
   $("loginButton").disabled = true;
-
   message("正在驗證工作人員……");
 
   try {
@@ -1149,7 +1196,6 @@ $("loginForm").addEventListener("submit", async event => {
       throw new Error((result && result.message) || "工作人員 PIN 驗證失敗。");
     }
 
-    // PIN 僅保存在目前頁面的記憶體，查詢與報到時由後端再次驗證。
     currentPin = pin;
     session = "verified";
     currentDeviceName = deviceName;
@@ -1160,7 +1206,10 @@ $("loginForm").addEventListener("submit", async event => {
     show($("participantPanel"), false);
     show($("scannerPanel"), true);
 
-    message("PIN 驗證成功（登入者：" + currentDeviceName + "），請啟動相機。", "ok");
+    message(
+      "PIN 驗證成功（登入者：" + currentDeviceName + "），請啟動相機。",
+      "ok"
+    );
 
     $("loginStatus").innerHTML =
       '<span class="login-badge">✓ 已登入：' +
@@ -1189,7 +1238,6 @@ $("loginForm").addEventListener("submit", async event => {
 
 /* =========================
    頁面初始狀態
-   每次開啟都要求重新登入
 ========================= */
 
 show($("loginPanel"), true);
