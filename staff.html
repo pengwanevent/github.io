@@ -803,8 +803,7 @@ $("checkInButton").addEventListener("click", () => {
   $("confirmText").textContent =
     "確認為「" + currentParticipant.name +
     "」執行報到？\n期別學號：" +
-    currentParticipant.studentId +
-    "\n參加人數：" + currentParticipant.count;
+    currentParticipant.studentId ;
 
   $("confirmDialog").showModal();
 });
