@@ -1,0 +1,671 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b55">
+  <title>工作人員報到系統｜測試版</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 22px 14px;
+      background: #f2f5f4;
+      color: #263b35;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .header {
+      padding: 23px 20px;
+      border-radius: 18px 18px 0 0;
+      background: #176b55;
+      color: white;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 1px;
+      opacity: .85;
+    }
+
+    h1 {
+      margin: 8px 0;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      opacity: .9;
+    }
+
+    .card {
+      padding: 22px 19px;
+      margin-bottom: 14px;
+      background: white;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 4px 18px rgba(25, 54, 44, .06);
+    }
+
+    .section {
+      padding: 17px 0;
+      border-bottom: 1px solid #edf0ee;
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-title {
+      margin: 0 0 13px;
+      font-size: 17px;
+    }
+
+    .muted {
+      color: #728078;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .event-box {
+      padding: 14px;
+      margin-bottom: 15px;
+      border-radius: 11px;
+      background: #edf6f1;
+    }
+
+    .event-label {
+      color: #547165;
+      font-size: 12px;
+    }
+
+    .event-name {
+      margin-top: 5px;
+      font-size: 19px;
+      font-weight: bold;
+      color: #176b55;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      min-height: 47px;
+      padding: 12px;
+      border: 1px solid #d6dfd9;
+      border-radius: 9px;
+      background: white;
+      color: #263b35;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #b9decd;
+      border-color: #176b55;
+    }
+
+    button {
+      width: 100%;
+      min-height: 47px;
+      margin-top: 13px;
+      padding: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #176b55;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #edf1ef;
+      color: #3d594d;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    .message {
+      padding: 13px 14px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      background: #f0f3f2;
+      color: #40564b;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success {
+      background: #e8f5ec;
+      color: #176b55;
+    }
+
+    .message.warning {
+      background: #fff1e9;
+      color: #9a452e;
+    }
+
+    .person-card {
+      padding: 15px;
+      margin-top: 13px;
+      border: 1px solid #e4ebe6;
+      border-radius: 12px;
+    }
+
+    .person-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .field {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 11px 0;
+      border-bottom: 1px solid #edf0ee;
+      font-size: 14px;
+    }
+
+    .field:last-child {
+      border-bottom: 0;
+    }
+
+    .field span {
+      flex-shrink: 0;
+      color: #728078;
+    }
+
+    .field strong {
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #e8f5ec;
+      color: #176b55;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .status.done {
+      background: #fff0e9;
+      color: #a3442e;
+    }
+
+    .notice {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid #ead9b5;
+      border-radius: 9px;
+      background: #fff9eb;
+      color: #795d22;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer {
+      padding: 14px 4px;
+      color: #839088;
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <header class="header">
+    <div class="eyebrow">EVENT CHECK-IN</div>
+    <h1>工作人員報到系統</h1>
+    <p class="subtitle">
+      請先核對參加者場次及姓名，再確認報到。
+    </p>
+  </header>
+
+  <main class="card">
+    <div id="message" class="message" role="status" aria-live="polite">
+      正在確認報到資訊……
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">報到場次</h2>
+
+      <div class="event-box">
+        <div class="event-label">目前掃描的活動</div>
+        <div id="eventName" class="event-name">讀取中……</div>
+      </div>
+
+      <div class="field">
+        <span>報到識別碼</span>
+        <strong id="codeDisplay">尚未取得</strong>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">工作人員驗證</h2>
+
+      <p class="muted">
+        請輸入工作人員 PIN，查詢這筆報到資料。
+      </p>
+
+      <label for="pin">工作人員 PIN</label>
+      <input
+        id="pin"
+        type="password"
+        autocomplete="off"
+        placeholder="請輸入 PIN"
+      >
+
+      <label for="device">報到設備名稱</label>
+      <input
+        id="device"
+        type="text"
+        maxlength="50"
+        value="報到手機1"
+        placeholder="例如：報到手機1"
+      >
+
+      <button id="lookupButton" type="button">
+        驗證 PIN 並查詢資料
+      </button>
+    </section>
+
+    <section id="personSection" class="section hidden">
+      <h2 class="section-title">參加者資料</h2>
+
+      <div id="personInfo" class="person-card"></div>
+
+      <div id="testNotice" class="notice">
+        目前是測試介面：查詢功能可測試，但尚未啟用實際報到寫入。
+        不會修改正式報到紀錄。
+      </div>
+
+      <button id="checkInButton" type="button" disabled>
+        確認報到（測試版暫停寫入）
+      </button>
+
+      <button id="resetButton" type="button" class="secondary">
+        重新查詢
+      </button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    婉如基金會活動報到系統<br>
+    請確認場次及姓名正確，再進行報到。
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/*
+ * 使用已部署的 Apps Script API Bridge。
+ * 本測試版只呼叫查詢功能，不呼叫 staffCheckIn，
+ * 因此不會修改正式報到紀錄。
+ */
+const GAS_API_URL =
+  "https://script.google.com/macros/s/AKfycbyPPjPvjmdblS0njmuUYXXcLMhxyeCEOUpBBh5p9TaAQILyi2czWrgW1I8B_xZfCkhZMA/exec";
+
+const EVENTS = {
+  "1115": "婉如基金會在職11/15場次",
+  "1121": "婉如基金會在職11/21場次",
+  "1122": "婉如基金會在職11/22場次"
+};
+
+const params = new URLSearchParams(location.search);
+const eventCode = (params.get("event") || "").trim();
+const participantCode = (params.get("code") || "").trim();
+
+const $ = id => document.getElementById(id);
+const pendingRequests = new Map();
+
+let lookupDone = false;
+let currentParticipant = null;
+
+function showMessage(text, type) {
+  const box = $("message");
+  box.textContent = text;
+  box.className = "message" + (type ? " " + type : "");
+}
+
+function setBusy(id, busy, busyText) {
+  const button = $(id);
+
+  if (!button.dataset.originalText) {
+    button.dataset.originalText = button.textContent.trim();
+  }
+
+  button.disabled = Boolean(busy);
+  button.textContent = busy
+    ? busyText
+    : button.dataset.originalText;
+}
+
+/* Apps Script API Bridge 回傳資料 */
+window.addEventListener("message", function(event) {
+  const data = event.data;
+
+  if (
+    !data ||
+    data.channel !== "pengwanevent-gas-bridge" ||
+    !data.requestId
+  ) {
+    return;
+  }
+
+  const request = pendingRequests.get(String(data.requestId));
+  if (!request) return;
+
+  let allowed = event.origin === "null";
+
+  try {
+    const host = new URL(event.origin).hostname;
+
+    allowed = allowed ||
+      host === "script.google.com" ||
+      host === "googleusercontent.com" ||
+      host.endsWith(".googleusercontent.com");
+  } catch (error) {}
+
+  if (!allowed) return;
+
+  clearTimeout(request.timer);
+  pendingRequests.delete(String(data.requestId));
+
+  if (request.iframe.parentNode) {
+    request.iframe.parentNode.removeChild(request.iframe);
+  }
+
+  if (request.form.parentNode) {
+    request.form.parentNode.removeChild(request.form);
+  }
+
+  if (data.ok) {
+    request.resolve(data.data);
+  } else {
+    request.reject(
+      new Error(data.error || "Apps Script 後端回報錯誤。")
+    );
+  }
+});
+
+function callApi(method, args) {
+  return new Promise(function(resolve, reject) {
+    const requestId =
+      "staff_" + Date.now().toString(36) + "_" +
+      Math.random().toString(36).slice(2, 10);
+
+    const frameName = "frame_" + requestId;
+
+    const iframe = document.createElement("iframe");
+    iframe.name = frameName;
+    iframe.title = "背景 API";
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.style.cssText =
+      "position:fixed;left:-10000px;top:-10000px;" +
+      "width:1px;height:1px;border:0";
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = GAS_API_URL;
+    form.target = frameName;
+    form.style.display = "none";
+
+    const payload = document.createElement("input");
+    payload.type = "hidden";
+    payload.name = "payload";
+    payload.value = JSON.stringify({
+      method: method,
+      args: args || []
+    });
+
+    const request = document.createElement("input");
+    request.type = "hidden";
+    request.name = "requestId";
+    request.value = requestId;
+
+    form.append(payload, request);
+
+    const timer = setTimeout(function() {
+      pendingRequests.delete(requestId);
+
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      if (form.parentNode) form.parentNode.removeChild(form);
+
+      reject(new Error(
+        "連線逾時，請確認 Apps Script API Bridge 已部署。"
+      ));
+    }, 25000);
+
+    pendingRequests.set(requestId, {
+      resolve: resolve,
+      reject: reject,
+      timer: timer,
+      iframe: iframe,
+      form: form
+    });
+
+    document.body.append(iframe, form);
+
+    try {
+      form.submit();
+    } catch (error) {
+      clearTimeout(timer);
+      pendingRequests.delete(requestId);
+      iframe.remove();
+      form.remove();
+      reject(error);
+    }
+  });
+}
+
+function addField(container, label, value) {
+  const row = document.createElement("div");
+  row.className = "field";
+
+  const left = document.createElement("span");
+  left.textContent = label;
+
+  const right = document.createElement("strong");
+  right.textContent = value || "未提供";
+
+  row.append(left, right);
+  container.appendChild(row);
+}
+
+function renderParticipant(participant) {
+  currentParticipant = participant;
+  lookupDone = true;
+
+  const container = $("personInfo");
+  container.replaceChildren();
+
+  const title = document.createElement("h3");
+  title.className = "person-title";
+  title.textContent = participant.name || "參加者";
+  container.appendChild(title);
+
+  addField(
+    container,
+    "活動場次",
+    participant.eventName || EVENTS[eventCode]
+  );
+
+  addField(container, "姓名", participant.name);
+  addField(container, "期別學號", participant.studentId);
+
+  const statusRow = document.createElement("div");
+  statusRow.className = "field";
+
+  const statusLabel = document.createElement("span");
+  statusLabel.textContent = "報到狀態";
+
+  const status = document.createElement("strong");
+  status.className = "status" +
+    (participant.status === "已報到" ? " done" : "");
+
+  status.textContent =
+    participant.status || "尚未報到";
+
+  statusRow.append(statusLabel, status);
+  container.appendChild(statusRow);
+
+  addField(
+    container,
+    "報到時間",
+    participant.checkInTime || "尚未報到"
+  );
+
+  $("personSection").classList.remove("hidden");
+
+  showMessage(
+    participant.status === "已報到"
+      ? "查詢成功：這位參加者已完成報到。"
+      : "查詢成功：請核對場次及姓名。",
+    participant.status === "已報到" ? "warning" : "success"
+  );
+}
+
+async function lookupParticipant() {
+  const pin = $("pin").value.trim();
+
+  if (!eventCode || !EVENTS[eventCode]) {
+    showMessage(
+      "網址缺少有效的場次代碼，請從測試網址重新開啟。",
+      "warning"
+    );
+    return;
+  }
+
+  if (!participantCode) {
+    showMessage(
+      "網址缺少報到識別碼，請使用現有測試連結。",
+      "warning"
+    );
+    return;
+  }
+
+  if (!pin) {
+    showMessage("請輸入工作人員 PIN。", "warning");
+    return;
+  }
+
+  lookupDone = false;
+  currentParticipant = null;
+  $("personSection").classList.add("hidden");
+
+  setBusy("lookupButton", true, "正在驗證及查詢……");
+  showMessage("正在查詢參加者資料……");
+
+  try {
+    const result = await callApi(
+      "getStaffParticipant",
+      [eventCode, participantCode, pin]
+    );
+
+    const participant =
+      result && result.participant
+        ? result.participant
+        : result;
+
+    if (!participant || !participant.name) {
+      throw new Error("查無參加者資料，請核對 PIN、場次及識別碼。");
+    }
+
+    renderParticipant(participant);
+  } catch (error) {
+    showMessage(
+      error && error.message
+        ? error.message
+        : "查詢失敗，請稍後再試。",
+      "warning"
+    );
+  } finally {
+    setBusy("lookupButton", false);
+  }
+}
+
+function resetLookup() {
+  lookupDone = false;
+  currentParticipant = null;
+
+  $("personSection").classList.add("hidden");
+  $("pin").value = "";
+
+  showMessage("請輸入工作人員 PIN，重新查詢資料。");
+  $("pin").focus();
+}
+
+function init() {
+  $("eventName").textContent =
+    EVENTS[eventCode] || "未指定有效場次";
+
+  // 僅顯示識別碼末四碼，避免整組代碼一直露出。
+  $("codeDisplay").textContent = participantCode
+    ? "••••" + participantCode.slice(-4)
+    : "尚未取得";
+
+  if (!EVENTS[eventCode] || !participantCode) {
+    showMessage(
+      "這個測試頁需要場次代碼與既有報到識別碼。請使用現有資料建立測試網址。",
+      "warning"
+    );
+  } else {
+    showMessage(
+      "測試介面已就緒。請輸入工作人員 PIN 開始查詢。"
+    );
+  }
+
+  $("lookupButton").addEventListener(
+    "click",
+    lookupParticipant
+  );
+
+  $("resetButton").addEventListener(
+    "click",
+    resetLookup
+  );
+
+  $("pin").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      lookupParticipant();
+    }
+  });
+
+  // 本測試頁刻意不呼叫 staffCheckIn，
+  // 因此不會寫入或變更正式報到狀態。
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
