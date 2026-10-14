@@ -55,33 +55,48 @@
     }
 
     .hero {
-      text-align: center;
-      padding: 12px 8px 18px;
-    }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 4px 18px;
+}
 
-    .hero-icon {
-      display: flex;
-      width: 88px;
-      height: 88px;
-      margin: 0 auto 12px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 28px;
-      background: linear-gradient(145deg, #F8DCE9, #E9DDF5);
-      border: 2px solid #DCCDEB;
-      box-shadow: 0 5px 14px rgba(201, 185, 223, 0.10);
-      font-size: 54px;
-    }
+.hero-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  white-space: nowrap;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 30px;
-      line-height: 1.35;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-align: center;
-    }
+.hero-icon {
+  display: flex;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #F8DCE9, #DCC8F0);
+  border: 2px solid #DCCDEB;
+  box-shadow: 0 5px 14px rgba(169, 139, 203, 0.18);
+  font-size: 40px;
+}
 
+h1 {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(21px, 5.8vw, 30px);
+  line-height: 1.3;
+  font-weight: 850;
+  letter-spacing: 0.5px;
+  text-align: left;
+  white-space: nowrap;
+}
     h2 {
       margin: 0 0 14px;
       font-size: 24px;
@@ -296,11 +311,26 @@
 
     .message-card { padding: 14px 18px; }
 
-    .next-button {
-      min-height: 62px;
-      font-size: 21px;
-      margin: 0 0 20px;
-    }
+.next-button {
+  min-height: 62px;
+  font-size: 21px;
+  font-weight: 850;
+  margin: 0 0 20px;
+
+  /* 醒目的粉橘色 */
+  color: #FFFFFF !important;
+  background: linear-gradient(100deg, #F29A8B, #F5A66F) !important;
+  border: 2px solid #ED927B;
+  box-shadow: 0 4px 10px rgba(237, 146, 123, 0.28);
+}
+
+.next-button:hover {
+  background: linear-gradient(100deg, #E98278, #ED914F) !important;
+}
+
+.next-button:active {
+  transform: scale(0.98);
+}
 
     .footer-note {
       color: var(--muted);
@@ -353,8 +383,10 @@
 <body>
 <main>
   <header class="hero">
-    <div class="hero-icon" aria-label="Q版大象" role="img">🐘</div>
-    <h1>在職報到系統</h1>
+ <div class="hero-brand">
+  <div class="hero-icon" aria-label="Q版大象" role="img">🐘</div>
+  <h1>在職報到系統</h1>
+</div>
     <p class="subtitle">工作人員專用｜測試版</p>
     <div class="test-banner" role="status">測試版｜可登入及查詢，但不會寫入正式報到資料</div>
   </header>
