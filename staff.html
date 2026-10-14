@@ -730,7 +730,7 @@ function renderParticipant(p) {
   info.appendChild(name);
 
   const fields = [
-    ["參加場次", getEventDisplayName(p.eventName || p.eventCode || p.event)],
+    ["參加場次", getEventDisplayName(p.eventCode || p.event)],
     ["期別學號", p.studentId],
     ["報到時間", p.checkInTime || "—"],
     ["報到設備", p.device || "—"]
