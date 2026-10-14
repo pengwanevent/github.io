@@ -7,15 +7,25 @@
   <title>活動報到系統</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    *{box-sizing:border-box} body{margin:0;padding:20px 14px;background:#f4f6f8;color:#263238;font-family:Arial,"Noto Sans TC",sans-serif}
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px 14px;background:#f4f6f8;color:#263238;font-family:Arial,"Noto Sans TC",sans-serif}
     .card{max-width:480px;margin:0 auto;padding:24px 20px;background:#fff;border-radius:16px;box-shadow:0 3px 16px rgba(0,0,0,.07)}
-    h2{margin-top:0;font-size:23px;text-align:center}.section-title{margin-top:10px;margin-bottom:12px;font-size:20px;text-align:center}
-    .muted{color:#68737d;font-size:14px;line-height:1.7} label{display:block;margin:15px 0 6px;font-weight:bold}
+    h2{margin-top:0;font-size:23px;text-align:center}
+    .section-title{margin-top:10px;margin-bottom:12px;font-size:20px;text-align:center}
+    .muted{color:#68737d;font-size:14px;line-height:1.7}
+    label{display:block;margin:15px 0 6px;font-weight:bold}
     input{display:block;width:100%;padding:12px;border:1px solid #ccd3d9;border-radius:8px;background:#fff;font-size:16px}
     button{width:100%;margin-top:14px;padding:14px;border:0;border-radius:9px;background:#176b55;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
-    button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#536779}.message{margin-top:16px;padding:12px;border-radius:8px;background:#f0f3f5;line-height:1.7;overflow-wrap:anywhere;white-space:pre-wrap}
-    .qr{display:block;width:280px;max-width:100%;height:auto;margin:18px auto}.field{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf0f2}
-    .field span:first-child{flex-shrink:0;color:#68737d}.field strong{text-align:right;overflow-wrap:anywhere}.hidden{display:none!important}.success{color:#176b55}.warning{color:#a33b30}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .secondary{background:#536779}
+    .message{margin-top:16px;padding:12px;border-radius:8px;background:#f0f3f5;line-height:1.7;overflow-wrap:anywhere;white-space:pre-wrap}
+    .qr{display:block;width:280px;max-width:100%;height:auto;margin:18px auto}
+    .field{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf0f2}
+    .field span:first-child{flex-shrink:0;color:#68737d}
+    .field strong{text-align:right;overflow-wrap:anywhere}
+    .hidden{display:none!important}
+    .success{color:#176b55}
+    .warning{color:#a33b30}
     .event-name{margin-top:-8px;margin-bottom:18px;color:#68737d;font-size:14px;line-height:1.6;text-align:center}
   </style>
 </head>
@@ -76,11 +86,13 @@
 /* 正式設定：保持正式 LIFF ID 與原 Apps Script 後端 */
 const LIFF_ID = "2011929218-IOeMzt9Z";
 const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyPPjPvjmdblS0njmuUYXXcLMhxyeCEOUpBBh5p9TaAQILyi2czWrgW1I8B_xZfCkhZMA/exec";
+
 const EVENT_NAME_BY_CODE = {
   "1115": "婉如基金會在職11/15場次",
   "1121": "婉如基金會在職11/21場次",
   "1122": "婉如基金會在職11/22場次"
 };
+
 const initialParams = new URLSearchParams(window.location.search);
 const INITIAL_MODE = String(initialParams.get("mode") || "").trim();
 const INITIAL_CODE = String(initialParams.get("code") || "").trim();
@@ -91,6 +103,7 @@ let liffReady = false;
 let currentCode = INITIAL_CODE;
 let currentParticipant = null;
 let lookupDone = false;
+
 const pendingRequests = new Map();
 const $ = id => document.getElementById(id);
 
@@ -99,325 +112,852 @@ function showMessage(text, type) {
   element.textContent = text || "";
   element.className = "message" + (type ? " " + type : "");
 }
+
 function showSection(id) {
-  ["apiTestSection", "eventPickerSection", "bindSection", "participantSection", "staffSection"].forEach(sectionId => {
+  [
+    "apiTestSection",
+    "eventPickerSection",
+    "bindSection",
+    "participantSection",
+    "staffSection"
+  ].forEach(sectionId => {
     const section = $(sectionId);
     if (section) section.classList.add("hidden");
   });
+
   if (id && $(id)) $(id).classList.remove("hidden");
 }
+
 function setButtonBusy(buttonId, busy, busyText) {
   const button = $(buttonId);
   if (!button) return;
-  if (!button.dataset.originalText) button.dataset.originalText = button.textContent.trim();
+
+  if (!button.dataset.originalText) {
+    button.dataset.originalText = button.textContent.trim();
+  }
+
   button.disabled = Boolean(busy);
   button.textContent = busy ? busyText : button.dataset.originalText;
 }
+
 function setEventHeading(eventCode) {
   $("eventName").textContent = EVENT_NAME_BY_CODE[eventCode] || "";
 }
+
 function addField(container, label, value) {
-  const row = document.createElement("div"); row.className = "field";
-  const left = document.createElement("span"); left.textContent = label;
-  const right = document.createElement("strong"); right.textContent = value || "未提供";
-  row.append(left, right); container.appendChild(row);
+  const row = document.createElement("div");
+  row.className = "field";
+
+  const left = document.createElement("span");
+  left.textContent = label;
+
+  const right = document.createElement("strong");
+  right.textContent = value || "未提供";
+
+  row.append(left, right);
+  container.appendChild(row);
 }
 
 /*
- * Apps Script 不會在 GitHub Pages 上提供 google.script.run。
- * 此頁透過隱藏 iframe + POST 呼叫 ApiBridge.gs，再以 postMessage 收回結果。
+ * GitHub Pages 沒有 google.script.run。
+ * 這裡透過隱藏 iframe + POST 呼叫 ApiBridge.gs，
+ * 再使用 postMessage 收回後端結果。
  */
 window.addEventListener("message", function(event) {
   const data = event.data;
-  if (!data || data.channel !== "pengwanevent-gas-bridge" || !data.requestId) return;
+
+  if (
+    !data ||
+    data.channel !== "pengwanevent-gas-bridge" ||
+    !data.requestId
+  ) {
+    return;
+  }
+
   const pending = pendingRequests.get(String(data.requestId));
   if (!pending) return;
-  // Google Apps Script 的沙盒回應有時會回報 opaque origin（"null"）；只接受
-  // 本頁剛建立、requestId 隨機且仍在等待中的請求，其他訊息一律忽略。
+
   let originAllowed = event.origin === "null";
+
   try {
     const host = new URL(event.origin).hostname;
-    originAllowed = originAllowed || host === "script.google.com" ||
-      host === "googleusercontent.com" || host.endsWith(".googleusercontent.com");
-  } catch (err) { /* opaque origin */ }
+
+    originAllowed = originAllowed ||
+      host === "script.google.com" ||
+      host === "googleusercontent.com" ||
+      host.endsWith(".googleusercontent.com");
+
+  } catch (err) {
+    // 某些沙盒 iframe 會使用 opaque origin。
+  }
+
   if (!originAllowed) return;
+
   clearTimeout(pending.timer);
   pendingRequests.delete(String(data.requestId));
-  if (pending.iframe && pending.iframe.parentNode) pending.iframe.parentNode.removeChild(pending.iframe);
-  if (pending.form && pending.form.parentNode) pending.form.parentNode.removeChild(pending.form);
-  if (data.ok) pending.resolve(data.data);
-  else pending.reject(new Error(data.error || "Apps Script 後端發生錯誤。"));
+
+  if (pending.iframe && pending.iframe.parentNode) {
+    pending.iframe.parentNode.removeChild(pending.iframe);
+  }
+
+  if (pending.form && pending.form.parentNode) {
+    pending.form.parentNode.removeChild(pending.form);
+  }
+
+  if (data.ok) {
+    pending.resolve(data.data);
+  } else {
+    pending.reject(
+      new Error(data.error || "Apps Script 後端發生錯誤。")
+    );
+  }
 });
 
 function gasPost_(method, args) {
   return new Promise(function(resolve, reject) {
-    const requestId = "req_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 12);
+    const requestId =
+      "req_" + Date.now().toString(36) + "_" +
+      Math.random().toString(36).slice(2, 12);
+
     const frameName = "gas_frame_" + requestId;
+
     const iframe = document.createElement("iframe");
     iframe.name = frameName;
     iframe.title = "背景 API 連線";
     iframe.setAttribute("aria-hidden", "true");
-    iframe.style.cssText = "position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;border:0";
+    iframe.style.cssText =
+      "position:fixed;left:-10000px;top:-10000px;" +
+      "width:1px;height:1px;border:0";
 
     const form = document.createElement("form");
     form.method = "POST";
     form.action = GAS_API_URL;
     form.target = frameName;
     form.style.display = "none";
+
     const payloadInput = document.createElement("input");
     payloadInput.type = "hidden";
     payloadInput.name = "payload";
-    payloadInput.value = JSON.stringify({ method: method, args: args || [] });
+    payloadInput.value = JSON.stringify({
+      method: method,
+      args: args || []
+    });
+
     const requestInput = document.createElement("input");
     requestInput.type = "hidden";
     requestInput.name = "requestId";
     requestInput.value = requestId;
+
     form.append(payloadInput, requestInput);
 
     const timer = setTimeout(function() {
       pendingRequests.delete(requestId);
-      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      if (form.parentNode) form.parentNode.removeChild(form);
-      reject(new Error("連線逾時：Apps Script 後端沒有回覆。請先確認已新增 ApiBridge.gs 並部署最新版本。"));
+
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+
+      if (form.parentNode) {
+        form.parentNode.removeChild(form);
+      }
+
+      reject(
+        new Error(
+          "連線逾時：Apps Script 後端沒有回覆。" +
+          "請確認已新增 ApiBridge.gs 並部署最新版本。"
+        )
+      );
     }, REQUEST_TIMEOUT_MS);
 
-    pendingRequests.set(requestId, { resolve, reject, timer, iframe, form });
+    pendingRequests.set(requestId, {
+      resolve: resolve,
+      reject: reject,
+      timer: timer,
+      iframe: iframe,
+      form: form
+    });
+
     document.body.append(iframe, form);
-    try { form.submit(); }
-    catch (error) {
-      clearTimeout(timer); pendingRequests.delete(requestId);
-      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      if (form.parentNode) form.parentNode.removeChild(form);
+
+    try {
+      form.submit();
+    } catch (error) {
+      clearTimeout(timer);
+      pendingRequests.delete(requestId);
+
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+
+      if (form.parentNode) {
+        form.parentNode.removeChild(form);
+      }
+
       reject(error);
     }
   });
 }
 
 function callServer(method, args, onSuccess, onFailure) {
-  gasPost_(method, args).then(function(result) {
-    if (typeof onSuccess === "function") onSuccess(result);
-  }).catch(function(error) {
-    showMessage(error && error.message ? error.message : "無法連線至後端程式。", "warning");
-    if (typeof onFailure === "function") onFailure(error);
-  });
+  gasPost_(method, args)
+    .then(function(result) {
+      if (typeof onSuccess === "function") {
+        onSuccess(result);
+      }
+    })
+    .catch(function(error) {
+      showMessage(
+        error && error.message
+          ? error.message
+          : "無法連線至後端程式。",
+        "warning"
+      );
+
+      if (typeof onFailure === "function") {
+        onFailure(error);
+      }
+    });
 }
 
 function readParamsAfterLiffInit_() {
   const params = new URLSearchParams(window.location.search);
+
   let eventCode = params.get("event") || "";
   let mode = params.get("mode") || INITIAL_MODE;
   let code = params.get("code") || INITIAL_CODE;
+
   const state = params.get("liff.state") || "";
+
   if (state) {
     try {
       const stateUrl = new URL(state, window.location.origin);
-      eventCode = eventCode || stateUrl.searchParams.get("event") || "";
-      mode = mode || stateUrl.searchParams.get("mode") || "";
-      code = code || stateUrl.searchParams.get("code") || "";
+
+      eventCode =
+        eventCode || stateUrl.searchParams.get("event") || "";
+
+      mode =
+        mode || stateUrl.searchParams.get("mode") || "";
+
+      code =
+        code || stateUrl.searchParams.get("code") || "";
+
     } catch (err) {
-      const stateParams = new URLSearchParams(state.replace(/^\?/, ""));
+      const stateParams = new URLSearchParams(
+        state.replace(/^\?/, "")
+      );
+
       eventCode = eventCode || stateParams.get("event") || "";
       mode = mode || stateParams.get("mode") || "";
       code = code || stateParams.get("code") || "";
     }
   }
-  return { eventCode: String(eventCode).trim(), mode: String(mode).trim(), code: String(code).trim() };
+
+  return {
+    eventCode: String(eventCode).trim(),
+    mode: String(mode).trim(),
+    code: String(code).trim()
+  };
 }
+
 function updateUrlAfterInit_(params) {
   // 僅在 liff.init() 完成後呼叫，避免破壞 LIFF 初始化參數。
   const url = new URL(window.location.href);
-  ["liff.state", "liff.referrer", "lineAppVersion"].forEach(k => url.searchParams.delete(k));
-  Object.keys(params || {}).forEach(k => {
-    if (params[k]) url.searchParams.set(k, params[k]);
-    else url.searchParams.delete(k);
+
+  [
+    "liff.state",
+    "liff.referrer",
+    "lineAppVersion"
+  ].forEach(function(key) {
+    url.searchParams.delete(key);
   });
+
+  Object.keys(params || {}).forEach(function(key) {
+    if (params[key]) {
+      url.searchParams.set(key, params[key]);
+    } else {
+      url.searchParams.delete(key);
+    }
+  });
+
   window.history.replaceState({}, document.title, url.toString());
   return url;
 }
 
 function chooseEventForBinding_(eventCode) {
   const code = String(eventCode || "").trim();
+
   if (!Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, code)) {
-    showSection("eventPickerSection"); showMessage("活動場次無效，請重新選擇。", "warning"); return;
+    showSection("eventPickerSection");
+    showMessage("活動場次無效，請重新選擇。", "warning");
+    return;
   }
-  activeEventCode = code; setEventHeading(code); $("pageTitle").textContent = "活動報到系統";
+
+  activeEventCode = code;
+  setEventHeading(code);
+  $("pageTitle").textContent = "活動報到系統";
+
   if (!liffReady) {
-    showSection("eventPickerSection"); showMessage("LINE 尚未完成初始化，請稍後再試。", "warning"); return;
+    showSection("eventPickerSection");
+    showMessage("LINE 尚未完成初始化，請稍後再試。", "warning");
+    return;
   }
+
   const targetUrl = new URL(window.location.href);
-  ["liff.state", "liff.referrer", "lineAppVersion"].forEach(k => targetUrl.searchParams.delete(k));
+
+  [
+    "liff.state",
+    "liff.referrer",
+    "lineAppVersion"
+  ].forEach(function(key) {
+    targetUrl.searchParams.delete(key);
+  });
+
   targetUrl.searchParams.set("event", code);
-  targetUrl.searchParams.delete("mode"); targetUrl.searchParams.delete("code");
+  targetUrl.searchParams.delete("mode");
+  targetUrl.searchParams.delete("code");
+
   if (!liff.isLoggedIn()) {
-    showSection("eventPickerSection"); showMessage("正在前往 LINE 登入……", "warning");
-    liff.login({ redirectUri: targetUrl.toString() }); return;
+    showSection("eventPickerSection");
+    showMessage("正在前往 LINE 登入……", "warning");
+
+    liff.login({
+      redirectUri: targetUrl.toString()
+    });
+
+    return;
   }
+
   window.history.replaceState({}, document.title, targetUrl.toString());
   loadMyQr();
 }
+
 function routeParticipantByEvent_() {
   const state = readParamsAfterLiffInit_();
+
   if (state.mode === "staff") {
     currentCode = state.code;
     activeEventCode = state.eventCode;
-    if (!Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, activeEventCode) || !currentCode) {
-      showMessage("工作人員報到網址缺少有效場次或識別碼，請重新掃描正確的 QR Code。", "warning"); return;
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        EVENT_NAME_BY_CODE,
+        activeEventCode
+      ) ||
+      !currentCode
+    ) {
+      showMessage(
+        "工作人員報到網址缺少有效場次或識別碼，" +
+        "請重新掃描正確的報到 QR Code。",
+        "warning"
+      );
+      return;
     }
-    showSection("staffSection"); $("pageTitle").textContent = "工作人員報到"; setEventHeading(activeEventCode);
-    showMessage("請輸入工作人員 PIN，開始查詢。"); return;
+
+    showSection("staffSection");
+    $("pageTitle").textContent = "工作人員報到";
+    setEventHeading(activeEventCode);
+    showMessage("請輸入工作人員 PIN，開始查詢。");
+    return;
   }
-  if (state.eventCode && Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, state.eventCode)) {
+
+  if (
+    state.eventCode &&
+    Object.prototype.hasOwnProperty.call(
+      EVENT_NAME_BY_CODE,
+      state.eventCode
+    )
+  ) {
     activeEventCode = state.eventCode;
-    // 使用網址中已選場次，不再顯示場次選單。
-    if (!liff.isLoggedIn()) { chooseEventForBinding_(state.eventCode); return; }
-    setEventHeading(state.eventCode); loadMyQr(); return;
+
+    if (!liff.isLoggedIn()) {
+      chooseEventForBinding_(state.eventCode);
+      return;
+    }
+
+    setEventHeading(state.eventCode);
+    loadMyQr();
+    return;
   }
+
   if (state.eventCode) {
-    activeEventCode = ""; showSection("eventPickerSection");
-    showMessage("活動場次代碼無效，請重新選擇場次。", "warning"); return;
+    activeEventCode = "";
+    showSection("eventPickerSection");
+    showMessage("活動場次代碼無效，請重新選擇場次。", "warning");
+    return;
   }
-  activeEventCode = ""; showSection("eventPickerSection");
-  $("pageTitle").textContent = "活動報到系統"; $("eventName").textContent = "";
+
+  activeEventCode = "";
+  showSection("eventPickerSection");
+  $("pageTitle").textContent = "活動報到系統";
+  $("eventName").textContent = "";
   showMessage("請先選擇您報名的場次。");
 }
+
 function returnToEventPicker_() {
-  activeEventCode = ""; currentParticipant = null; currentCode = ""; lookupDone = false;
-  $("phone").value = ""; $("participantInfo").replaceChildren(); $("staffInfo").replaceChildren();
-  $("participantQr").removeAttribute("src"); $("participantQr").classList.add("hidden");
-  $("qrHint").textContent = "QR Code 尚未載入。"; $("checkInControls").classList.add("hidden");
-  if (liffReady) updateUrlAfterInit_({ event: "", mode: "", code: "" });
-  showSection("eventPickerSection"); $("pageTitle").textContent = "活動報到系統"; $("eventName").textContent = "";
+  activeEventCode = "";
+  currentParticipant = null;
+  currentCode = "";
+  lookupDone = false;
+
+  $("phone").value = "";
+  $("participantInfo").replaceChildren();
+  $("staffInfo").replaceChildren();
+
+  $("participantQr").removeAttribute("src");
+  $("participantQr").classList.add("hidden");
+  $("qrHint").textContent = "QR Code 尚未載入。";
+  $("checkInControls").classList.add("hidden");
+
+  if (liffReady) {
+    updateUrlAfterInit_({
+      event: "",
+      mode: "",
+      code: ""
+    });
+  }
+
+  showSection("eventPickerSection");
+  $("pageTitle").textContent = "活動報到系統";
+  $("eventName").textContent = "";
   showMessage("請選擇您報名的活動場次。");
 }
 
 function renderParticipant(participant) {
-  if (!participant) { showMessage("後端沒有回傳參加者資料。", "warning"); return; }
-  currentParticipant = participant;
-  const participantEventCode = participant.eventCode || activeEventCode;
-  if (Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, participantEventCode)) {
-    activeEventCode = participantEventCode; setEventHeading(participantEventCode);
+  if (!participant) {
+    showMessage("後端沒有回傳參加者資料。", "warning");
+    return;
   }
-  const container = $("participantInfo"); container.replaceChildren();
-  addField(container, "場次", participant.eventName || EVENT_NAME_BY_CODE[activeEventCode]);
+
+  currentParticipant = participant;
+
+  const participantEventCode =
+    participant.eventCode || activeEventCode;
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      EVENT_NAME_BY_CODE,
+      participantEventCode
+    )
+  ) {
+    activeEventCode = participantEventCode;
+    setEventHeading(participantEventCode);
+  }
+
+  const container = $("participantInfo");
+  container.replaceChildren();
+
+  addField(
+    container,
+    "場次",
+    participant.eventName || EVENT_NAME_BY_CODE[activeEventCode]
+  );
+
   addField(container, "姓名", participant.name);
   addField(container, "期別學號", participant.studentId);
-  addField(container, "報到狀態", participant.status || "尚未報到");
-  const qr = $("participantQr"), hint = $("qrHint"), qrUrl = String(participant.qrUrl || "").trim();
+  addField(
+    container,
+    "報到狀態",
+    participant.status || "尚未報到"
+  );
+
+  const qr = $("participantQr");
+  const hint = $("qrHint");
+  const qrUrl = String(participant.qrUrl || "").trim();
+
   qr.onerror = function() {
-    qr.classList.add("hidden"); qr.removeAttribute("src");
-    hint.textContent = "QR Code 圖片載入失敗，請檢查網路或稍後重試。"; hint.classList.remove("hidden");
+    qr.classList.add("hidden");
+    qr.removeAttribute("src");
+    hint.textContent =
+      "QR Code 圖片載入失敗，請檢查網路或稍後重試。";
+    hint.classList.remove("hidden");
   };
+
   if (/^https?:\/\//i.test(qrUrl)) {
-    qr.src = "https://quickchart.io/qr?size=300&margin=2&text=" + encodeURIComponent(qrUrl);
-    qr.classList.remove("hidden"); hint.textContent = "請保存此 QR Code，活動當天向工作人員出示。"; hint.classList.remove("hidden");
+    qr.src =
+      "https://quickchart.io/qr?size=300&margin=2&text=" +
+      encodeURIComponent(qrUrl);
+
+    qr.classList.remove("hidden");
+    hint.textContent =
+      "請保存此 QR Code，活動當天向工作人員出示。";
+    hint.classList.remove("hidden");
+
   } else {
-    qr.removeAttribute("src"); qr.classList.add("hidden"); hint.textContent = "目前尚無有效報到網址，請聯絡主辦單位。"; hint.classList.remove("hidden");
+    qr.removeAttribute("src");
+    qr.classList.add("hidden");
+    hint.textContent =
+      "目前尚無有效報到網址，請聯絡主辦單位。";
+    hint.classList.remove("hidden");
   }
-  showSection("participantSection"); $("pageTitle").textContent = "我的報到 QR Code";
-  showMessage(participant.status === "已報到" ? "這筆資料已完成報到。" : "已取得參加者資料。", "success");
+
+  showSection("participantSection");
+  $("pageTitle").textContent = "我的報到 QR Code";
+
+  showMessage(
+    participant.status === "已報到"
+      ? "這筆資料已完成報到。"
+      : "已取得參加者資料。",
+    "success"
+  );
 }
+
 function loadMyQr() {
-  if (!Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, activeEventCode)) {
-    showSection("eventPickerSection"); showMessage("請先選擇您報名的場次。", "warning"); return;
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      EVENT_NAME_BY_CODE,
+      activeEventCode
+    )
+  ) {
+    showSection("eventPickerSection");
+    showMessage("請先選擇您報名的場次。", "warning");
+    return;
   }
-  if (!liffReady || !liff.isLoggedIn()) { showMessage("請先登入 LINE。", "warning"); return; }
+
+  if (!liffReady || !liff.isLoggedIn()) {
+    showMessage("請先登入 LINE。", "warning");
+    return;
+  }
+
   const idToken = liff.getIDToken();
-  if (!idToken) { showMessage("無法取得 LINE ID Token，請確認 LIFF 已啟用 openid 權限。", "warning"); return; }
-  showSection(null); setEventHeading(activeEventCode); showMessage("正在查詢此場次的報到資料……");
-  callServer("getMyQr", [activeEventCode, idToken], function(result) {
-    if (!result || !result.bound) {
-      showSection("bindSection"); $("pageTitle").textContent = "綁定我的報到資料"; setEventHeading(activeEventCode);
-      showMessage("此場次尚未綁定，請輸入問卷填寫的手機號碼。"); return;
+
+  if (!idToken) {
+    showMessage(
+      "無法取得 LINE ID Token，請確認 LIFF 已啟用 openid 權限。",
+      "warning"
+    );
+    return;
+  }
+
+  showSection(null);
+  setEventHeading(activeEventCode);
+  showMessage("正在查詢此場次的報到資料……");
+
+  callServer(
+    "getMyQr",
+    [activeEventCode, idToken],
+    function(result) {
+      if (!result || !result.bound) {
+        showSection("bindSection");
+        $("pageTitle").textContent = "綁定我的報到資料";
+        setEventHeading(activeEventCode);
+        showMessage(
+          "此場次尚未綁定，請輸入問卷填寫的手機號碼。"
+        );
+        return;
+      }
+
+      renderParticipant(result.participant);
     }
-    renderParticipant(result.participant);
-  });
+  );
 }
+
 function submitBinding() {
   const phone = $("phone").value.trim();
-  if (!Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, activeEventCode)) { showSection("eventPickerSection"); showMessage("請先選擇活動場次。", "warning"); return; }
-  if (!phone) { showMessage("請輸入手機號碼。", "warning"); return; }
-  if (!liffReady || !liff.isLoggedIn()) { showMessage("請先登入 LINE。", "warning"); return; }
+
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      EVENT_NAME_BY_CODE,
+      activeEventCode
+    )
+  ) {
+    showSection("eventPickerSection");
+    showMessage("請先選擇活動場次。", "warning");
+    return;
+  }
+
+  if (!phone) {
+    showMessage("請輸入手機號碼。", "warning");
+    return;
+  }
+
+  if (!liffReady || !liff.isLoggedIn()) {
+    showMessage("請先登入 LINE。", "warning");
+    return;
+  }
+
   const idToken = liff.getIDToken();
-  if (!idToken) { showMessage("無法取得 LINE 登入憑證，請確認 LIFF 的 openid 權限。", "warning"); return; }
-  setButtonBusy("bindButton", true, "正在核對資料……"); showMessage("正在核對手機號碼並綁定 LINE……");
-  callServer("bindPhone", [activeEventCode, phone, idToken], function(result) {
-    setButtonBusy("bindButton", false);
-    if (!result || result.ok !== true || !result.participant) { showMessage("尚未確認綁定成功，請檢查資料後再試。", "warning"); return; }
-    renderParticipant(result.participant);
-    showMessage(result.alreadyBound ? "此 LINE 帳號已綁定這筆資料。" : "LINE 綁定成功！", "success");
-  }, function() { setButtonBusy("bindButton", false); });
+
+  if (!idToken) {
+    showMessage(
+      "無法取得 LINE 登入憑證，請確認 LIFF 的 openid 權限。",
+      "warning"
+    );
+    return;
+  }
+
+  setButtonBusy("bindButton", true, "正在核對資料……");
+  showMessage("正在核對手機號碼並綁定 LINE……");
+
+  callServer(
+    "bindPhone",
+    [activeEventCode, phone, idToken],
+
+    function(result) {
+      setButtonBusy("bindButton", false);
+
+      if (
+        !result ||
+        result.ok !== true ||
+        !result.participant
+      ) {
+        showMessage(
+          "尚未確認綁定成功，請檢查資料後再試。",
+          "warning"
+        );
+        return;
+      }
+
+      renderParticipant(result.participant);
+
+      showMessage(
+        result.alreadyBound
+          ? "此 LINE 帳號已綁定這筆資料。"
+          : "LINE 綁定成功！",
+        "success"
+      );
+    },
+
+    function() {
+      setButtonBusy("bindButton", false);
+    }
+  );
 }
+
 function renderStaffParticipant(participant) {
-  if (!participant) { showMessage("查無參加者資料。", "warning"); return; }
-  currentParticipant = participant; lookupDone = true;
-  const container = $("staffInfo"); container.replaceChildren();
-  addField(container, "場次", participant.eventName || EVENT_NAME_BY_CODE[activeEventCode]);
-  addField(container, "姓名", participant.name); addField(container, "期別學號", participant.studentId);
-  addField(container, "報到狀態", participant.status || "尚未報到"); addField(container, "報到時間", participant.checkInTime || "尚未報到");
-  $("checkInControls").classList.remove("hidden"); $("pageTitle").textContent = "工作人員報到";
-  const already = participant.status === "已報到"; $("checkInButton").disabled = already;
-  showMessage(already ? "這位參加者已經報到過了，不能重複登記。" : "請核對場次及姓名，再按確認報到。", already ? "warning" : "");
+  if (!participant) {
+    showMessage("查無參加者資料。", "warning");
+    return;
+  }
+
+  currentParticipant = participant;
+  lookupDone = true;
+
+  const container = $("staffInfo");
+  container.replaceChildren();
+
+  addField(
+    container,
+    "場次",
+    participant.eventName || EVENT_NAME_BY_CODE[activeEventCode]
+  );
+
+  addField(container, "姓名", participant.name);
+  addField(container, "期別學號", participant.studentId);
+  addField(
+    container,
+    "報到狀態",
+    participant.status || "尚未報到"
+  );
+  addField(
+    container,
+    "報到時間",
+    participant.checkInTime || "尚未報到"
+  );
+
+  $("checkInControls").classList.remove("hidden");
+  $("pageTitle").textContent = "工作人員報到";
+
+  const already = participant.status === "已報到";
+  $("checkInButton").disabled = already;
+
+  showMessage(
+    already
+      ? "這位參加者已經報到過了，不能重複登記。"
+      : "請核對場次及姓名，再按確認報到。",
+    already ? "warning" : ""
+  );
 }
+
 function lookupStaffParticipant() {
   const pin = $("staffPin").value.trim();
-  if (!pin) { showMessage("請輸入工作人員 PIN。", "warning"); return; }
-  if (!currentCode || !Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, activeEventCode)) { showMessage("報到網址缺少有效場次或識別碼。", "warning"); return; }
-  lookupDone = false; currentParticipant = null; $("staffInfo").replaceChildren(); $("checkInControls").classList.add("hidden");
-  setButtonBusy("lookupButton", true, "正在查詢……"); showMessage("正在驗證工作人員並查詢資料……");
-  callServer("getStaffParticipant", [activeEventCode, currentCode, pin], function(result) {
-    setButtonBusy("lookupButton", false); renderStaffParticipant(result);
-  }, function() { setButtonBusy("lookupButton", false); });
+
+  if (!pin) {
+    showMessage("請輸入工作人員 PIN。", "warning");
+    return;
+  }
+
+  if (
+    !currentCode ||
+    !Object.prototype.hasOwnProperty.call(
+      EVENT_NAME_BY_CODE,
+      activeEventCode
+    )
+  ) {
+    showMessage("報到網址缺少有效場次或識別碼。", "warning");
+    return;
+  }
+
+  lookupDone = false;
+  currentParticipant = null;
+  $("staffInfo").replaceChildren();
+  $("checkInControls").classList.add("hidden");
+
+  setButtonBusy("lookupButton", true, "正在查詢……");
+  showMessage("正在驗證工作人員並查詢資料……");
+
+  callServer(
+    "getStaffParticipant",
+    [activeEventCode, currentCode, pin],
+
+    function(result) {
+      setButtonBusy("lookupButton", false);
+      renderStaffParticipant(result);
+    },
+
+    function() {
+      setButtonBusy("lookupButton", false);
+    }
+  );
 }
+
 function confirmCheckIn() {
-  if (!lookupDone || !currentParticipant || !currentCode) { showMessage("請先驗證工作人員並查詢參加者。", "warning"); return; }
-  if (currentParticipant.status === "已報到") { showMessage("這位參加者已經報到過了。", "warning"); return; }
-  const pin = $("staffPin").value.trim(), device = $("device").value.trim();
-  if (!pin || !device) { showMessage("請輸入工作人員 PIN 及設備名稱。", "warning"); return; }
-  if (device.length > 50) { showMessage("報到設備名稱不可超過 50 個字元。", "warning"); return; }
-  if (!confirm("確定要將這位參加者登記為已報到嗎？")) return;
+  if (!lookupDone || !currentParticipant || !currentCode) {
+    showMessage("請先驗證工作人員並查詢參加者。", "warning");
+    return;
+  }
+
+  if (currentParticipant.status === "已報到") {
+    showMessage("這位參加者已經報到過了。", "warning");
+    return;
+  }
+
+  const pin = $("staffPin").value.trim();
+  const device = $("device").value.trim();
+
+  if (!pin || !device) {
+    showMessage("請輸入工作人員 PIN 及設備名稱。", "warning");
+    return;
+  }
+
+  if (device.length > 50) {
+    showMessage("報到設備名稱不可超過 50 個字元。", "warning");
+    return;
+  }
+
+  if (!confirm("確定要將這位參加者登記為已報到嗎？")) {
+    return;
+  }
+
   setButtonBusy("checkInButton", true, "正在登記報到……");
-  callServer("staffCheckIn", [activeEventCode, currentCode, device, pin], function(result) {
-    setButtonBusy("checkInButton", false);
-    if (result && result.participant) renderStaffParticipant(result.participant);
-    if (result && result.already) showMessage("這位參加者已經報到過了。", "warning");
-    else if (result && result.ok) showMessage("報到成功！", "success");
-    else showMessage("後端未確認報到成功，請核對執行結果。", "warning");
-  }, function() { setButtonBusy("checkInButton", false); });
+
+  callServer(
+    "staffCheckIn",
+    [activeEventCode, currentCode, device, pin],
+
+    function(result) {
+      setButtonBusy("checkInButton", false);
+
+      if (result && result.participant) {
+        renderStaffParticipant(result.participant);
+      }
+
+      if (result && result.already) {
+        showMessage("這位參加者已經報到過了。", "warning");
+      } else if (result && result.ok) {
+        showMessage("報到成功！", "success");
+      } else {
+        showMessage(
+          "後端未確認報到成功，請核對執行結果。",
+          "warning"
+        );
+      }
+    },
+
+    function() {
+      setButtonBusy("checkInButton", false);
+    }
+  );
 }
 
 function testBackendConnection_() {
   showMessage("正在測試 Apps Script 後端連線……");
-  callServer("ping", [], function(result) {
-    showMessage(result && result.message ? result.message : "後端有回覆，但回覆格式與預期不同。", result && result.message ? "success" : "warning");
-  });
+
+  callServer(
+    "ping",
+    [],
+    function(result) {
+      showMessage(
+        result && result.message
+          ? result.message
+          : "後端有回覆，但回覆格式與預期不同。",
+        result && result.message ? "success" : "warning"
+      );
+    }
+  );
 }
 
 async function initApp() {
-  if (new URLSearchParams(window.location.search).get("apiTest") === "1") {
+  if (
+    new URLSearchParams(window.location.search).get("apiTest") === "1"
+  ) {
     showSection("apiTestSection");
     $("pageTitle").textContent = "後端連線測試";
-    showMessage("可測試 API 橋接。此頁不會初始化 LIFF，也不會修改場次資料。");
+    showMessage(
+      "可測試 API 橋接。此頁不會初始化 LIFF，也不會修改場次資料。"
+    );
     return;
   }
+
   if (INITIAL_MODE === "staff") {
     const state = readParamsAfterLiffInit_();
-    activeEventCode = state.eventCode; currentCode = state.code;
-    if (!Object.prototype.hasOwnProperty.call(EVENT_NAME_BY_CODE, activeEventCode) || !currentCode) {
-      showMessage("工作人員報到網址缺少有效場次或識別碼，請重新掃描正確的報到 QR Code。", "warning"); return;
+
+    activeEventCode = state.eventCode;
+    currentCode = state.code;
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        EVENT_NAME_BY_CODE,
+        activeEventCode
+      ) ||
+      !currentCode
+    ) {
+      showMessage(
+        "工作人員報到網址缺少有效場次或識別碼，" +
+        "請重新掃描正確的報到 QR Code。",
+        "warning"
+      );
+      return;
     }
-    showSection("staffSection"); $("pageTitle").textContent = "工作人員報到"; setEventHeading(activeEventCode);
-    showMessage("請輸入工作人員 PIN，開始查詢。"); return;
+
+    showSection("staffSection");
+    $("pageTitle").textContent = "工作人員報到";
+    setEventHeading(activeEventCode);
+    showMessage("請輸入工作人員 PIN，開始查詢。");
+    return;
   }
-  if (typeof window.liff === "undefined") { showMessage("LIFF SDK 未載入，請檢查網路或 SDK 網址。", "warning"); return; }
+
+  if (typeof window.liff === "undefined") {
+    showMessage(
+      "LIFF SDK 未載入，請檢查網路或 SDK 網址。",
+      "warning"
+    );
+    return;
+  }
+
   try {
     showMessage("正在初始化 LINE LIFF……");
-    await liff.init({ liffId: LIFF_ID });
+
+    await liff.init({
+      liffId: LIFF_ID
+    });
+
     liffReady = true;
     routeParticipantByEvent_();
+
   } catch (error) {
-    showMessage("LINE 初始化失敗：" + (error && error.message ? error.message : String(error)) + "\n請檢查 LIFF ID、Endpoint URL 及登入權限。", "warning");
+    showMessage(
+      "LINE 初始化失敗：" +
+      (
+        error && error.message
+          ? error.message
+          : String(error)
+      ) +
+      "\n請檢查 LIFF ID、Endpoint URL 及登入權限。",
+      "warning"
+    );
   }
 }
+
 window.addEventListener("load", initApp);
 </script>
 </body>
