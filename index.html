@@ -522,6 +522,11 @@ function returnToEventPicker_() {
   showMessage("請選擇您報名的活動場次。");
 }
 
+function isAlreadyCheckedIn_(value) {
+  const normalized = String(value || "").trim().replace(/[\s\u3000]/g, "");
+  return ["已報到", "已完成報到", "報到完成"].indexOf(normalized) >= 0;
+}
+
 function renderParticipant(participant) {
   if (!participant) {
     showMessage("後端沒有回傳參加者資料。", "warning");
@@ -594,7 +599,7 @@ function renderParticipant(participant) {
   $("pageTitle").textContent = "我的報到 QR Code";
 
   showMessage(
-    participant.status === "已報到"
+    isAlreadyCheckedIn_(participant.status)
       ? "這筆資料已完成報到。"
       : "已取得參加者資料。",
     "success"
@@ -757,7 +762,7 @@ function renderStaffParticipant(participant) {
   $("checkInControls").classList.remove("hidden");
   $("pageTitle").textContent = "工作人員報到";
 
-  const already = participant.status === "已報到";
+  const already = isAlreadyCheckedIn_(participant.status);
   $("checkInButton").disabled = already;
 
   showMessage(
@@ -816,7 +821,7 @@ function confirmCheckIn() {
     return;
   }
 
-  if (currentParticipant.status === "已報到") {
+  if (isAlreadyCheckedIn_(currentParticipant.status)) {
     showMessage("這位參加者已經報到過了。", "warning");
     return;
   }
