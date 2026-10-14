@@ -371,6 +371,47 @@
       >
       <button id="loginButton" type="submit">登入工作人員系統</button>
     </form>
+
+    <button id="showSetupButton" type="button" class="secondary">首次設定正式 PIN</button>
+
+    <form id="setupPinForm" class="hidden" autocomplete="off">
+      <h2 style="margin-top:22px">設定正式工作人員 PIN</h2>
+      <p class="muted">僅供正式系統第一次啟用。需要管理驗證碼；設定完成後，此畫面不能再次修改 PIN。</p>
+      <input
+        id="setupKey"
+        type="password"
+        autocomplete="off"
+        placeholder="請輸入初次設定驗證碼"
+        aria-label="初次設定驗證碼"
+        required
+      >
+      <input
+        id="setupPin"
+        type="password"
+        inputmode="numeric"
+        autocomplete="new-password"
+        pattern="[0-9]{6,12}"
+        minlength="6"
+        maxlength="12"
+        placeholder="設定 6 至 12 位數字 PIN"
+        aria-label="新的工作人員 PIN"
+        required
+      >
+      <input
+        id="setupPinConfirm"
+        type="password"
+        inputmode="numeric"
+        autocomplete="new-password"
+        pattern="[0-9]{6,12}"
+        minlength="6"
+        maxlength="12"
+        placeholder="再次輸入新 PIN"
+        aria-label="確認新的工作人員 PIN"
+        required
+      >
+      <button id="saveSetupPinButton" type="submit">儲存正式 PIN</button>
+      <button id="cancelSetupButton" type="button" class="secondary">取消</button>
+    </form>
   </section>
 
   <!-- 參加者資料放在相機區上方 -->
@@ -687,6 +728,11 @@ async function handleScan(decodedText) {
    注意：此函式只負責更新畫面
 ========================= */
 
+function isAlreadyCheckedInStatus(value) {
+  const normalized = String(value || "").trim().replace(/[\s\u3000]/g, "");
+  return ["已報到", "已完成報到", "報到完成"].indexOf(normalized) >= 0;
+}
+
 function renderParticipant(p) {
   const info = $("participantInfo");
 
@@ -723,7 +769,7 @@ function renderParticipant(p) {
     info.appendChild(row);
   });
 
-  const already = p.status === "已報到";
+  const already = isAlreadyCheckedInStatus(p.status);
 
   const statusEl = $("participantStatus");
 
@@ -761,7 +807,7 @@ function renderParticipant(p) {
 $("checkInButton").addEventListener("click", () => {
   if (!currentParticipant || !currentCode || busy) return;
 
-  if (currentParticipant.status === "已報到") {
+  if (isAlreadyCheckedInStatus(currentParticipant.status)) {
     message(
       "此參加者已經報到，不會再次寫入。",
       "warn"
@@ -797,7 +843,7 @@ $("confirmYes").addEventListener("click", async () => {
 
   if (
     currentParticipant &&
-    currentParticipant.status === "已報到"
+    isAlreadyCheckedInStatus(currentParticipant.status)
   ) {
     message(
       "此參加者已經報到，不會再次寫入。",
@@ -854,7 +900,7 @@ $("confirmYes").addEventListener("click", async () => {
 
     $("checkInButton").disabled =
       !currentParticipant ||
-      currentParticipant.status === "已報到";
+      isAlreadyCheckedInStatus(currentParticipant.status);
   }
 });
 
@@ -946,6 +992,73 @@ $("logoutButton").addEventListener("click", async () => {
     behavior: "smooth",
     block: "start"
   });
+});
+
+/* =========================
+   正式 PIN 初次設定（在 APP 內完成）
+========================= */
+
+$("showSetupButton").addEventListener("click", () => {
+  show($("setupPinForm"), true);
+  $("setupKey").focus();
+  message("請輸入初次設定驗證碼及新的正式 PIN。", "");
+  $("setupPinForm").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+$("cancelSetupButton").addEventListener("click", () => {
+  $("setupPinForm").reset();
+  show($("setupPinForm"), false);
+  message("已取消 PIN 設定。", "");
+});
+
+$("setupPinForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (busy) return;
+
+  const setupKey = $("setupKey").value.trim();
+  const newPin = $("setupPin").value.trim();
+  const confirmPin = $("setupPinConfirm").value.trim();
+
+  if (!setupKey) {
+    message("請輸入初次設定驗證碼。", "err");
+    $("setupKey").focus();
+    return;
+  }
+  if (!/^\d{6,12}$/.test(newPin)) {
+    message("正式工作人員 PIN 必須是 6 至 12 位數字。", "err");
+    $("setupPin").focus();
+    return;
+  }
+  if (newPin !== confirmPin) {
+    message("兩次輸入的 PIN 不一致，請重新確認。", "err");
+    $("setupPinConfirm").focus();
+    return;
+  }
+
+  if (!confirm("確定要將此 PIN 設為正式系統唯一的工作人員 PIN 嗎？設定後不能從此畫面再次修改。")) return;
+
+  busy = true;
+  $("saveSetupPinButton").disabled = true;
+  message("正在安全設定正式 PIN……");
+
+  try {
+    const result = await api("setupStaffPinFromApp", [setupKey, newPin]);
+    if (!result || result.success !== true) {
+      throw new Error((result && result.message) || "正式 PIN 設定失敗。");
+    }
+
+    $("setupPinForm").reset();
+    show($("setupPinForm"), false);
+    $("showSetupButton").disabled = true;
+    $("showSetupButton").textContent = "正式 PIN 已完成初次設定";
+    $("pin").value = "";
+    message("✓ 正式工作人員 PIN 已設定完成！請在上方登入畫面輸入新 PIN。", "ok");
+  } catch (err) {
+    message(err.message || String(err), "err");
+  } finally {
+    busy = false;
+    $("saveSetupPinButton").disabled = false;
+  }
 });
 
 /* =========================
