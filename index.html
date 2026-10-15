@@ -970,11 +970,14 @@ function renderStaffParticipant(participant) {
   const container = $("staffInfo");
   container.replaceChildren();
 
-  addField(
-    container,
-    "場次",
-    participant.eventName || EVENT_NAME_BY_CODE[activeEventCode]
-  );
+addField(
+  container,
+  "場次",
+  EVENT_NAME_BY_CODE[participant.eventCode || activeEventCode] ||
+    participant.eventName ||
+    participant.eventCode ||
+    activeEventCode
+);
 
   addField(container, "姓名", participant.name);
   addField(container, "期別學號", participant.studentId);
