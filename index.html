@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#FBE4EA">
-  <title>在職報到系統</title>
+  <title>在職QRcode</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
@@ -171,7 +171,7 @@
 
 <body>
 <main class="card">
-  <h2 id="pageTitle">在職報到系統</h2>
+  <h2 id="pageTitle">在職QRCode</h2>
   <div id="eventName" class="event-name"></div>
 
   <div id="message" class="message" role="status" aria-live="polite">
@@ -618,7 +618,7 @@ function chooseEventForBinding_(eventCode) {
 
   activeEventCode = code;
   setEventHeading(code);
-  $("pageTitle").textContent = "在職報到系統";
+  $("pageTitle").textContent = "在職QRCode";
 
   if (!liffReady) {
     showSection("eventPickerSection");
@@ -712,7 +712,7 @@ function routeParticipantByEvent_() {
 
   activeEventCode = "";
   showSection("eventPickerSection");
-  $("pageTitle").textContent = "在職報到系統";
+  $("pageTitle").textContent = "在職QRcode";
   $("eventName").textContent = "";
   showMessage("請先選擇您報名的場次。");
 }
@@ -741,7 +741,7 @@ function returnToEventPicker_() {
   }
 
   showSection("eventPickerSection");
-  $("pageTitle").textContent = "在職報到系統";
+  $("pageTitle").textContent = "在職QRCode";
   $("eventName").textContent = "";
   showMessage("請選擇您報名的在職場次。");
 }
